@@ -28,11 +28,11 @@ Outputs: Bool<br>
 Checks if a file is compatible with .cnf file format. Returns True if so, returns False if not. <br>
 
 ## Supported Types ##
-There are 3 default supported types: int, str, and list
+There are 4 supported types: int, float, str, and list
 <br><br>
 An int is a whole number that can be any value<br>
 A str is a list of text (quotes not required)<br>
-A list is a list of values, all default to strings.<br> 
+A list is a list of values, which currently have to all be strings.<br> 
 
 More supported types may be added. 
 
