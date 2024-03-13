@@ -5,6 +5,7 @@ print("-----READ TEST-------")
 print(pyson.getData("example.pyson","str_example"))
 print(pyson.getData("example.pyson","int_example"))
 print(pyson.getData("example.pyson","list_example"))
+print(pyson.getData("example.pyson","float_example"))
 
 # Whole test
 print("---WHOLE TEST--------")

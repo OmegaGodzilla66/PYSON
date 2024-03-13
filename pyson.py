@@ -28,6 +28,8 @@ def getData(filePath,datacall):
             return str(found)
         case "int":
             return int(found)
+        case "float":
+            return float(found)
         case "list":
             return found.split("(*)")
         case _:
@@ -47,6 +49,8 @@ def getWhole(filePath):
                 whole.append(str(data[2]))
             case "int":
                 whole.append(int(data[2]))
+            case "float":
+                whole.append(float(data[2]))
             case "list":
                 whole.append(data[2].split("(*)"))
             case _:
