@@ -76,8 +76,6 @@ def write(filePath: str, datacall, datatype, data):
     if datacall in calls:
         raise Exception("Cannot have two items with the same call.")
     # Checks for .pyson compatability with the new item
-    if not checkCompatible:
-        raise Exception("File is not compatible with .pyson format.")
     match datatype:
         case "str":
             toWrite = "\n"+datacall+":"+datatype+":"+to_append
