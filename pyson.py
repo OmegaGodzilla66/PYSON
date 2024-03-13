@@ -55,9 +55,9 @@ def getWhole(filePath):
 
     return whole
 
-def write(filePath, datacall, datatype, data):
+def write(filePath: str, datacall, datatype, data):
     # Checks for .pyson compatability
-    ddata = data # Wahoo! A return to PN naming congentions! Gotta love that!
+    to_append = data
     if not checkCompatible(filePath):
         raise Exception("File is not compatible with .pyson format.")
 
@@ -68,30 +68,28 @@ def write(filePath, datacall, datatype, data):
     for item in file:
         data = item.split(":")
         match data[1]:
-            case "str":
-                calls.append(data[0])
-            case "int":
-                calls.append(data[0])
-            case "list":
+            case "str" | "int" | "list" | "float":
                 calls.append(data[0])
             case _:
                 print("ERROR FOUND AT UNKNOWN DATA")
                 return False
-    if duplications(calls,datacall):
+    if datacall in calls:
         raise Exception("Cannot have two items with the same call.")
     # Checks for .pyson compatability with the new item
     if not checkCompatible:
         raise Exception("File is not compatible with .pyson format.")
     match datatype:
         case "str":
-            toWrite = "\n"+datacall+":"+datatype+":"+ddata
+            toWrite = "\n"+datacall+":"+datatype+":"+to_append
         case "int":
-            toWrite = "\n"+datacall+":"+datatype+":"+int(ddata)
+            toWrite = "\n"+datacall+":"+datatype+":"+int(to_append)
+        case "float":
+            toWrite = "\n"+datacall+":"+datatype+":"+float(to_append)
         case "list":
             lst = ""
-            for i in range(0,len(ddata)-1):
-                lst += ddata[i]+"(*)"
-            lst += ddata[-1]
+            for i in range(0,len(to_append)-1):
+                lst += to_append[i]+"(*)"
+            lst += to_append[-1]
             toWrite = "\n"+datacall+":"+datatype+":"+lst
         case _:
             raise Exception(f"""Data type {datatype} not supported""")
@@ -99,7 +97,7 @@ def write(filePath, datacall, datatype, data):
     with open(filePath, "a") as a:
         a.write(toWrite)
 
-def checkCompatible(filePath):
+def checkCompatible(filePath: str):
     file = open(filePath,"r").read().split("\n")
     whole = []
     
@@ -113,11 +111,7 @@ def checkCompatible(filePath):
             print("ERROR FOUND IN FORMATTING")
             return False
         match data[1]:
-            case "str":
-                whole.append(data[0])
-            case "int":
-                whole.append(data[0])
-            case "list":
+            case "str" | "int" | "list" | "float":
                 whole.append(data[0])
             case _:
                 print("ERROR FOUND AT UNKNOWN DATA")
@@ -131,9 +125,7 @@ def checkCompatible(filePath):
     return True        
 
 
-def duplications(seq,app = None):
-    if app is not None:
-        seq.append(app)
+def duplications(seq):
     seen = []
     unique_list = [x for x in seq if x not in seen and not seen.append(x)]
     return len(seq) != len(unique_list)
