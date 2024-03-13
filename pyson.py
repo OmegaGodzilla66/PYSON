@@ -12,15 +12,15 @@ def getData(filePath,datacall):
     found = None
     foundT = None
     for i in range(len(lost)):
-        if lost[i].split(":")[0]==datacall:
+        if lost[i].split(":")[0] == datacall:
             found = lost[i].split(":")[2]
             foundT = lost[i].split(":")[1]
 
-    if found == None:
+    if found is None:
         raise Exception(f"Data At Value {datacall} Not Found. Maybe try a different file?")
     # End lost and found
 
-    if foundT == None:
+    if foundT is None:
         raise Exception("This should never happen file was already verified to be correct")
 
     match foundT:
@@ -77,7 +77,8 @@ def write(filePath, datacall, datatype, data):
             case _:
                 print("ERROR FOUND AT UNKNOWN DATA")
                 return False
-    if duplications(calls,datacall): raise Exception("Cannot have two items with the same call.")
+    if duplications(calls,datacall):
+        raise Exception("Cannot have two items with the same call.")
     # Checks for .pyson compatability with the new item
     if not checkCompatible:
         raise Exception("File is not compatible with .pyson format.")
@@ -89,18 +90,18 @@ def write(filePath, datacall, datatype, data):
         case "list":
             lst = ""
             for i in range(0,len(ddata)-1):
-                lst+=ddata[i]+"(*)"
-            lst+=ddata[-1]
+                lst += ddata[i]+"(*)"
+            lst += ddata[-1]
             toWrite = "\n"+datacall+":"+datatype+":"+lst
         case _:
             raise Exception(f"""Data type {datatype} not supported""")
 
-    with open(filePath, "a") as a: a.write(toWrite)
+    with open(filePath, "a") as a:
+        a.write(toWrite)
 
 def checkCompatible(filePath):
     file = open(filePath,"r").read().split("\n")
     whole = []
-    calls = []
     
     for item in file:
         data = item.split(":")
@@ -108,7 +109,7 @@ def checkCompatible(filePath):
             data[0]
             data[1]
             data[2]
-        except:
+        except Exception:
             print("ERROR FOUND IN FORMATTING")
             return False
         match data[1]:
