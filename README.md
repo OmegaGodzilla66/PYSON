@@ -17,12 +17,6 @@ Output: The item in the stored type at index `datacall` in file `filePath`<br>
 Required inputs: `filePath`<br>
 Output: A list of all datas in their respective types<br>
 
-#### getWhole ####
-Required inputs: `filePath`, `datacall`, `datatype`, `data`<br>
-Outputs: None<br>
-Modifications to .pyson:<br>
-Adds a datapoint in file `filePath`, will call `datacall`, with type `datatype`, and value `data`. <br>
-
 #### isCompatible ####
 Required inputs: `filePath`<br>
 Outputs: Bool<br>
@@ -34,10 +28,12 @@ There are 4 supported types: int, float, str, and list
 An int is a whole number that can be any value<br>
 A str is a list of text (quotes not required)<br>
 A list is a list of values, which currently have to all be strings.<br> 
+A float is a decimal number, that can be any value<br>
 
 More supported types may be added. 
 
 ## Changelog ##
+v0.0.6: Added floats
 v0.0.5: Updated naming system, ported to github!
 v0.0.4: Added a function that checks if a file is compatible with .pyson file format. Fixed a bug in the write. Other general bug fixes. 
 
