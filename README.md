@@ -8,7 +8,7 @@ The purpose of this project is to provide a python-based alternative to JSON. Th
 <br>Belive it or not, this project is surprisingly easy to use. The only thing you have to do is copy/paste the contents of pyson.py into your own Python project! From then, you can just `import pyson`, and use functions as normal! Support for other languages may come soon. Support for this as a library (no copypaste needed) may be coming soon as well.
 <br><strong>The PYSON format does NOT include a newline at the end of the file, files with a newline at the end will be considered invalid</strong>
 ### List of Functions ###
-
+> *This applies to the Python version only. Docs are included in the .hpp file of the C++ version, which works entirely differently.*
 #### getData() ####
 Required inputs: `filePath`, `datacall`<br>
 Output: The item in the stored type at index `datacall` in file `filePath`<br>
