@@ -1,26 +1,32 @@
 ## START OF FILE ##
 def getData(filePath,datacall):
-    """Inputs: 
-    filePath - folder/file.pyson (note: can have multiple folder paths, however file MUST use pyson-type file configuration.
+    """
+    Inputs: 
+    filePath - formatted like a normal file path (forward slash)
     datacall: str - name of data that you are extracting
-    Outputs the data stored in pyson format that it's inserted as."""
+    Outputs the data stored in pyson format that it's inserted as.
+    """
     # Checks for .pyson compatability
     if not checkCompatible(filePath):
         raise Exception("File is not compatible with .pyson format.")
 
-    
+    # found is the found value
+    # foundT is the found type
     found = None
     foundT = None
+    # Loop through the lines in the file
     for line in open(filePath, "r").read().split("\n"):
+        # split the pyson value stored into [name, type, value]
         splitted = line.split(":")
+        # if correct name, fetch type & value
         if splitted[0] == datacall:
             found = splitted[2]
             foundT = splitted[1]
-
+    # if nothing is found, raise an exception
     if found is None:
         raise Exception(f"Data At Value {datacall} Not Found. Maybe try a different file?")
-    # End lost and found
     
+    # Match types
     match foundT:
         case "str":
             return str(found)
@@ -33,14 +39,13 @@ def getData(filePath,datacall):
         case _:
             raise Exception("Unreachable, should not happen")
 
-
+# get all of the file, returned as an array of values
 def getWhole(filePath):
     # Checks for .pyson compatability
     if not checkCompatible(filePath):
         raise Exception("File is not compatible with pyson format.")
-    wholeRAW = open(filePath,"r").read().split("\n")
     whole = []
-    for item in wholeRAW:
+    for item in open(filePath,"r").read().split("\n"):
         data = item.split(":")
         match data[1]:
             case "str":
@@ -52,18 +57,20 @@ def getWhole(filePath):
             case "list":
                 whole.append(data[2].split("(*)"))
             case _:
-                print("ERROR FOUND AT UNKNOWN DATA")
-                raise Exception(f"""Unknown data {data[1]} type found in {filePath} at call {data[0]}. Raw pyson data: {item}. Try checking if you have any external plugins that may be interfearing with the pyson format. Or, if you entered the data manually, check if you made a typo. """)
+                print("ERROR: Unknown Datatype")
+                raise Exception(f"""Unknown data {data[1]} type found in {filePath} at call {data[0]}. Raw pyson data: {item}. Try checking if you have any external plugins that may be interfering with the pyson format. Or, if you entered the data manually, check if you made a typo. """)
 
     return whole
 
+
+# write pyson value to pyson file
+# TODO: optimize
 def write(filePath: str, datacall, datatype, data):
     # Checks for .pyson compatability
     to_append = data
     if not checkCompatible(filePath):
         raise Exception("File is not compatible with .pyson format.")
 
-    # Checks for duplicates
     file = open(filePath,"r").read().split("\n")
     calls = []
 
@@ -94,6 +101,8 @@ def write(filePath: str, datacall, datatype, data):
     with open(filePath, "a") as a:
         a.write(toWrite)
 
+
+# checks if file is compatible with pyson formatting
 def checkCompatible(filePath: str):
     file = open(filePath,"r").read().split("\n")
     whole = []
