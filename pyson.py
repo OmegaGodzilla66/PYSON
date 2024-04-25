@@ -118,10 +118,10 @@ def checkCompatible(filePath: str):
     
     return True        
 
-
+# returns true if duplications, false if none
 def duplications(seq):
     hash_table = {}
-    for item in list:
+    for item in seq:
         if item in hash_table:
             return True
         hash_table[item] = True
