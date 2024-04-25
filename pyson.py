@@ -103,10 +103,11 @@ def write(filePath: str, datacall, datatype, data):
 
 
 # checks if file is compatible with pyson formatting
+
 def checkCompatible(filePath: str):
     file = open(filePath,"r").read().split("\n")
     whole = []
-    
+    # go through the items, check if they have correct types, and if there it is [dataname, type, value]
     for item in file:
         data = item.split(":")
         if len(data) != 3:
@@ -118,7 +119,7 @@ def checkCompatible(filePath: str):
             case _:
                 print("ERROR FOUND AT UNKNOWN DATA")
                 return False
-
+    # check for duplications
     if duplications(whole):
         print("ERROR: Duplications present in pyson file.")
         return False
