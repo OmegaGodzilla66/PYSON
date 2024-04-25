@@ -80,22 +80,19 @@ def write(filePath: str, datacall, datatype, data):
     if datacall in calls:
         raise Exception("Cannot have two items with the same call.")
     # Checks for .pyson compatability with the new item
+    val = "" # empty placeholder so we don't mess with scope errors 
     match datatype:
         case "str":
-            toWrite = "\n"+datacall+":"+datatype+":"+to_append
+            val = to_append
         case "int":
-            toWrite = "\n"+datacall+":"+datatype+":"+int(to_append)
+            val = int(to_append)
         case "float":
-            toWrite = "\n"+datacall+":"+datatype+":"+float(to_append)
+            val = float(to_append)
         case "list":
-            lst = ""
-            for i in range(0,len(to_append)-1):
-                lst += to_append[i]+"(*)"
-            lst += to_append[-1]
-            toWrite = "\n"+datacall+":"+datatype+":"+lst
+            val = to_append.join("(*)")
         case _:
-            raise Exception(f"""Data type {datatype} not supported""")
-
+            raise Exception(f"Data type {datatype} not supported")
+    toWrite = "\n" + datacall + ":" + datatype + ":" + val
     with open(filePath, "a") as a:
         a.write(toWrite)
 
@@ -105,11 +102,7 @@ def checkCompatible(filePath: str):
     
     for item in file:
         data = item.split(":")
-        try:
-            data[0]
-            data[1]
-            data[2]
-        except Exception:
+        if len(data) != 3:
             print("ERROR FOUND IN FORMATTING")
             return False
         match data[1]:
@@ -119,7 +112,6 @@ def checkCompatible(filePath: str):
                 print("ERROR FOUND AT UNKNOWN DATA")
                 return False
 
-
     if duplications(whole):
         print("ERROR: Duplications present in pyson file.")
         return False
@@ -128,7 +120,10 @@ def checkCompatible(filePath: str):
 
 
 def duplications(seq):
-    seen = []
-    unique_list = [x for x in seq if x not in seen and not seen.append(x)]
-    return len(seq) != len(unique_list)
+    hash_table = {}
+    for item in list:
+        if item in hash_table:
+            return True
+        hash_table[item] = True
+    return False
 ## END OF FILE ##
