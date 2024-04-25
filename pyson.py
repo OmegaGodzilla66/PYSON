@@ -7,22 +7,20 @@ def getData(filePath,datacall):
     # Checks for .pyson compatability
     if not checkCompatible(filePath):
         raise Exception("File is not compatible with .pyson format.")
-    # start lost and found
-    lost = open(filePath, "r").read().split("\n")
+
+    
     found = None
     foundT = None
-    for i in range(len(lost)):
-        if lost[i].split(":")[0] == datacall:
-            found = lost[i].split(":")[2]
-            foundT = lost[i].split(":")[1]
+    for line in open(filePath, "r").read().split("\n"):
+        splitted = line.split(":")
+        if splitted[0] == datacall:
+            found = splitted[2]
+            foundT = splitted[1]
 
     if found is None:
         raise Exception(f"Data At Value {datacall} Not Found. Maybe try a different file?")
     # End lost and found
-
-    if foundT is None:
-        raise Exception("This should never happen file was already verified to be correct")
-
+    
     match foundT:
         case "str":
             return str(found)
@@ -33,7 +31,7 @@ def getData(filePath,datacall):
         case "list":
             return found.split("(*)")
         case _:
-            raise Exception(f"""Data type {foundT} not supported""")
+            raise Exception("Unreachable, should not happen")
 
 
 def getWhole(filePath):
