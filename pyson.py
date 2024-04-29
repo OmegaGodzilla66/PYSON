@@ -65,7 +65,9 @@ def getWhole(filePath):
 
 # append pyson value to pyson file
 # TODO: optimize
-def write(filePath: str, datacall, datatype, data):
+def write(filePath: str, datacall, datatype, data, mode = "a"):
+    if not (mode == "a" or mode == "w"):
+        raise Exception("invalid mode, must be 'a' or 'w'")
     # Checks for .pyson compatability
     to_append = data
     if not checkCompatible(filePath):
@@ -98,8 +100,8 @@ def write(filePath: str, datacall, datatype, data):
         case _:
             raise Exception(f"Data type {datatype} not supported")
     toWrite = "\n" + datacall + ":" + datatype + ":" + val
-    with open(filePath, "a") as a:
-        a.write(toWrite)
+    with open(filePath, mode) as f:
+        f.write(toWrite)
 
 
 
