@@ -63,7 +63,7 @@ def getWhole(filePath):
     return whole
 
 
-# write pyson value to pyson file
+# append pyson value to pyson file
 # TODO: optimize
 def write(filePath: str, datacall, datatype, data):
     # Checks for .pyson compatability
@@ -94,7 +94,7 @@ def write(filePath: str, datacall, datatype, data):
         case "float":
             val = float(to_append)
         case "list":
-            val = to_append.join("(*)")
+            val = "(*)".join(to_append)
         case _:
             raise Exception(f"Data type {datatype} not supported")
     toWrite = "\n" + datacall + ":" + datatype + ":" + val
@@ -114,14 +114,15 @@ def updateData(filePath, name, data):
         splitted = line.split(":")
         if splitted[0] == name:
             splitted[2] = data
-            fileData[index] = splitted.join(":")
+            fileData[index] = ":".join(splitted)
             foundItem = True
             break
         index += 1
     if not foundItem:
         raise Exception("couldn't write to non-existent item")
     # write to file
-    open(filePath, "w").write(fileData.join("\n"))
+    open(filePath, "w").write("\n".join(fileData))
+    return True
     
     
             
