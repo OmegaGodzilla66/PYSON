@@ -102,6 +102,30 @@ def write(filePath: str, datacall, datatype, data):
         a.write(toWrite)
 
 
+
+def updateData(filePath, name, data):
+    # loop through file
+    file = open(filePath, "r")
+    fileData = file.read().split("\n")
+    file.close()
+    index = 0
+    foundItem = False
+    for line in fileData:
+        splitted = line.split(":")
+        if splitted[0] == name:
+            splitted[2] = data
+            fileData[index] = splitted.join(":")
+            foundItem = True
+            break
+        index += 1
+    if not foundItem:
+        raise Exception("couldn't write to non-existent item")
+    # write to file
+    open(filePath, "w").write(fileData.join("\n"))
+    
+    
+            
+        
 # checks if file is compatible with pyson formatting
 
 def checkCompatible(filePath: str):
@@ -124,8 +148,7 @@ def checkCompatible(filePath: str):
         print("ERROR: Duplications present in pyson file.")
         return False
     
-    return True        
-
+    return True
 # returns true if duplications, false if none
 def duplications(seq):
     hash_table = {}
