@@ -13,9 +13,18 @@ print(pyson.getWhole("example.pyson"))
 
 # Append test
 print("---APPEND TEST-------")
-pyson.write("example.pyson","write_example","list",["this","is","a","new","list"])
+try:
+    pyson.write("example.pyson","write_example","list",["this","is","a","new","list"])
+except Exception:
+    # stupid legacy codebase
+    print("lol duplicate values present")
 print(pyson.getData("example.pyson","write_example"))
 
 # Compatability test
 print("---COMPATABILITY TEST------")
 print(pyson.checkCompatible("example.pyson"))
+
+# update val test
+print("---UPDATING TEST---")
+print(pyson.updateData("example.pyson", "str_example", "this is an updated string"))
+print(pyson.getData("example.pyson", "str_example"))
