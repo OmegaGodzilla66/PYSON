@@ -20,7 +20,7 @@ pyson.write("newfile.pyson", "string", "str", "value", "w")
 print("---APPEND TEST-------")
 pyson.write("newfile.pyson", "integer", "int", 123, "a")
 pyson.write("newfile.pyson", "floating-point", "float", 3.14, "a")
-pyson.write("newfile.pyson", "string list", "string", ["this is a list", "of strings"])
+pyson.write("newfile.pyson", "string list", "list", ["this is a list", "of strings"])
 print(pyson.getWhole("newfile.pyson"))
 
 # Compatability test

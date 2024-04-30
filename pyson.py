@@ -45,6 +45,8 @@ def getWhole(filePath) -> list[str | list[str] | float | int]:
 
     whole: list[str | list[str] | float | int] = []
     for item in open(filePath,"r").read().split("\n"):
+        if item == "":
+            continue
         data: list[str] = item.split(":")
         match data[1]:
             case "str":
@@ -63,7 +65,7 @@ def getWhole(filePath) -> list[str | list[str] | float | int]:
 # TODO: optimize
 def write(filePath: str, name: str, type: str, value: str | list[str] | int | float, mode = "a"):
     # Create the file if it doesn't exist
-    open(filePath, "w+").close()
+    open(filePath, "a+").close()
 
     # Make value be a str
     if isinstance(value, list):
@@ -85,6 +87,8 @@ def write(filePath: str, name: str, type: str, value: str | list[str] | int | fl
 
     data = ""
     for item in file:
+        if item == "":
+            continue
         data = item.split(":")
         match data[1]:
             case "str" | "int" | "list" | "float":
