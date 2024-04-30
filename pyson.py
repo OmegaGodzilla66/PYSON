@@ -59,19 +59,19 @@ def getWhole(filePath) -> list[str | list[str] | float | int]:
                 raise Exception(f"Unknown type {data[1]} in {filePath} found during getWhole()")
     return whole
 
-# append pyson value to pyson file
+# Append pyson value to pyson file
 # TODO: optimize
-def write(filePath: str, datacall, datatype, data, mode = "a"):
+def write(filePath: str, name: str, type: str, value: str, mode = "a"):
     if not (mode == "a" or mode == "w"):
-        raise Exception("invalid mode, must be 'a' or 'w'")
+        raise Exception("Invalid writing mode, must be 'a' or 'w'")
     # Checks for .pyson compatability
-    to_append = data
     if not checkCompatible(filePath):
         raise Exception("File is not compatible with .pyson format.")
 
     file = open(filePath,"r").read().split("\n")
     calls = []
 
+    data = ""
     for item in file:
         data = item.split(":")
         match data[1]:
@@ -80,25 +80,25 @@ def write(filePath: str, datacall, datatype, data, mode = "a"):
             case _:
                 print("ERROR FOUND AT UNKNOWN DATA")
                 return False
-    if datacall in calls:
+    if name in calls:
         raise Exception("Cannot have two items with the same call.")
     # Checks for .pyson compatability with the new item
-    val = "" # empty placeholder so we don't mess with scope errors 
-    match datatype:
+    match type:
         case "str":
-            val = to_append
+            pass
         case "int":
-            val = int(to_append)
+            # Make sure the value is actually an int
+            int(value)
         case "float":
-            val = float(to_append)
+            # Make sure the value is actually a float
+            float(value)
         case "list":
-            val = "(*)".join(to_append)
+            pass
         case _:
-            raise Exception(f"Data type {datatype} not supported")
-    toWrite = "\n" + datacall + ":" + datatype + ":" + val
+            raise Exception(f"Data type {type} not supported")
+    toWrite = "\n" + name + ":" + type + ":" + value
     with open(filePath, mode) as f:
         f.write(toWrite)
-
 
 
 def updateData(filePath, datacall, data):
