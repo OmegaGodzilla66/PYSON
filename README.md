@@ -1,4 +1,6 @@
 # PYSON #
+##### Maintained by: [OmegaGodzilla66](https://github.com/OmegaGodzilla66), [ComputingSquid](https://github.com/ProbablyComputingSquid), and [coolSchnoodle](https://github.com/coolSchnoodle) #####
+
 
 ## Overview ##
 The purpose of this project is to provide a python-based alternative to JSON. This is a (almost) fully functional JSON-inspired data management system!
@@ -13,17 +15,16 @@ The purpose of this project is to provide a python-based alternative to JSON. Th
 Required inputs: `filePath`, `datacall`<br>
 Output: The item in the stored type at index `datacall` in file `filePath`<br>
 
-#### getWhole ####
+#### getWhole() ####
 Required inputs: `filePath`<br>
 Output: A list of all datas in their respective types<br>
 
-#### getWhole ####
-Required inputs: `filePath`, `datacall`, `datatype`, `data`<br>
-Outputs: None<br>
-Modifications to .pyson:<br>
-Adds a datapoint in file `filePath`, will call `datacall`, with type `datatype`, and value `data`. <br>
+#### updateData() ####
+Required inputs: `filePath`, `name`, `data`<br>
+Updates entry `name` to contain value `data`<br>
+Output: Whether or not function call worked<br>
 
-#### isCompatible ####
+#### isCompatible() ####
 Required inputs: `filePath`<br>
 Outputs: Bool<br>
 Checks if a file is compatible with .cnf file format. Returns True if so, returns False if not. <br>
@@ -33,11 +34,15 @@ There are 4 supported types: int, float, str, and list
 <br><br>
 An int is a whole number that can be any value<br>
 A str is a list of text (quotes not required)<br>
-A list is a list of values, which currently have to all be strings.<br> 
+A list is a list of values, which currently have to all be strings. List items are seperated by the (*) seperator. Currently there is no escaping support. I don't really know why you would use that value normally in a list. <br> 
+A float is a decimal number, that can be any value<br>
 
 More supported types may be added. 
 
 ## Changelog ##
+v0.0.8: Added updateData function
+v0.0.7: Fixed errors, refactored bad code
+v0.0.6: Added floats
 v0.0.5: Updated naming system, ported to github!
 v0.0.4: Added a function that checks if a file is compatible with .pyson file format. Fixed a bug in the write. Other general bug fixes. 
 
@@ -46,6 +51,7 @@ v0.0.2: Added a read function for the whole file. Returns a list of all contents
 v0.0.1: Initial launch! Basic reading features for a .cnf file. Current compatible types are string, int, and list. <br>
 
 ### Dev comments ###
+0.0.8: I (computingSquid) have had to resort to drastic measures to get my pull request approved. coolSchnoodle was forced to say "uwu"
 0.0.5: <br>
 Wahoo! Porting to github!...oh shoot now I have to rename everything. 
 0.0.4: <br>
