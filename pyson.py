@@ -107,32 +107,33 @@ def write(filePath: str, name: str, type: str, value: str | list[str] | int | fl
         file.write(toWrite)
 
 
-def updateData(filePath, datacall, data):
-    # loop through file
+def updateData(filePath, name, data):
+    # Create the file if it doesn't exist
+    open(filePath, "w+").close()
+    # Read in the data
     file = open(filePath, "r")
     fileData = file.read().split("\n")
     file.close()
+    # Look through the data to find the value to update
     index = 0
     foundItem = False
     for line in fileData:
         splitted = line.split(":")
-        if splitted[0] == datacall:
+        if splitted[0] == name:
             splitted[2] = data
             fileData[index] = ":".join(splitted)
             foundItem = True
             break
         index += 1
+    # If no value had the desired name, raise an exception
     if not foundItem:
-        raise Exception("couldn't write to non-existent item")
-    # write to file
+        raise Exception("Couldn't write to non-existent item")
+    # Write out the data
     open(filePath, "w").write("\n".join(fileData))
     return True
-    
-    
             
         
 # checks if file is compatible with pyson formatting
-
 def checkCompatible(filePath: str):
     file = open(filePath,"r").read().split("\n")
     whole = []
