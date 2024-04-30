@@ -69,30 +69,30 @@ def write(filePath: str, name: str, type: str, value: str | list[str] | int | fl
         value = str(value)
     if not isinstance(value, str):
         raise Exception("Parameter value has invalid type")
-        
+
+    # Make sure the write mode is either append or write
     if not (mode == "a" or mode == "w"):
-        raise Exception("Invalid writing mode, must be 'a' or 'w'")
+        raise Exception("Invalid writing mode, must be 'a' (append) or 'w' (write)")
     # Checks for .pyson compatability
     if not checkCompatible(filePath):
         raise Exception("File is not compatible with .pyson format.")
 
     file = open(filePath,"r").read().split("\n")
-    calls = []
+    names = []
 
     data = ""
     for item in file:
         data = item.split(":")
         match data[1]:
             case "str" | "int" | "list" | "float":
-                calls.append(data[0])
+                names.append(data[0])
             case _:
-                print("ERROR FOUND AT UNKNOWN DATA")
-                return False
-    if name in calls:
+                raise Exception("Unreachable, type correctness is checked in checkCompatible()")
+    if name in names:
         raise Exception("Cannot have two items with the same call.")
     # Checks for .pyson compatability with the new item
     match type:
-        case "str":
+        case "str" | "list":
             pass
         case "int":
             # Make sure the value is actually an int
@@ -100,13 +100,11 @@ def write(filePath: str, name: str, type: str, value: str | list[str] | int | fl
         case "float":
             # Make sure the value is actually a float
             float(value)
-        case "list":
-            pass
         case _:
             raise Exception(f"Data type {type} not supported")
     toWrite = "\n" + name + ":" + type + ":" + value
-    with open(filePath, mode) as f:
-        f.write(toWrite)
+    with open(filePath, mode) as file:
+        file.write(toWrite)
 
 
 def updateData(filePath, datacall, data):
