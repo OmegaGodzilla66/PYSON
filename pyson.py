@@ -137,17 +137,39 @@ def updateData(filePath, name, data):
 # Returns `true` if the file at filePath is a valid pyson file, and false otherwise.
 def checkCompatible(filePath: str) -> bool:
     file = open(filePath,"r").read().split("\n")
-    whole = []
+    names = []
     # Go through the items, check if they have correct types, and if there it is [dataname, type, value]
     for item in file:
+        if item == "":
+            continue
         data = item.split(":")
-        if len(data) != 3:
+        if len(data) < 3:
+            print(f"Too few tokens: {str(len(data))}")
             return False
         match data[1]:
-            case "str" | "int" | "list" | "float":
-                whole.append(data[0])
+            case "str" | "list":
+                pass
+            case "int":
+                try:
+                    int(data[2])
+                except Exception:
+                    print(f"{data[2]} is not int")
+                    return False
+                if len(data) > 3:
+                    print(f"Too many tokens: {len(data)}")
+                    return False
+            case "float":
+                try:
+                    float(data[2])
+                except Exception:
+                    print(f"{data[2]} is not float")
+                    return False
+                if len(data) > 3:
+                    print(f"Too many tokens: {len(data)}")
+                    return False
             case _:
                 return False
+        names.append(data[0])
 
     # Returns true if a list has duplications, false otherwise
     def duplications(list):
@@ -159,7 +181,8 @@ def checkCompatible(filePath: str) -> bool:
         return False
         
     # Check for duplications
-    if duplications(whole):
+    if duplications(names):
+        print("Duplications happened")
         return False
     
     return True
