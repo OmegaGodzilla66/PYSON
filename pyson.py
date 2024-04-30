@@ -62,6 +62,9 @@ def getWhole(filePath) -> list[str | list[str] | float | int]:
 # Append pyson value to pyson file
 # TODO: optimize
 def write(filePath: str, name: str, type: str, value: str | list[str] | int | float, mode = "a"):
+    # Create the file if it doesn't exist
+    open(filePath, "w+").close()
+
     # Make value be a str
     if isinstance(value, list):
         value = "(*)".join(value)
@@ -108,8 +111,6 @@ def write(filePath: str, name: str, type: str, value: str | list[str] | int | fl
 
 
 def updateData(filePath, name, data):
-    # Create the file if it doesn't exist
-    open(filePath, "w+").close()
     # Read in the data
     file = open(filePath, "r")
     fileData = file.read().split("\n")
@@ -133,34 +134,32 @@ def updateData(filePath, name, data):
     return True
             
         
-# checks if file is compatible with pyson formatting
-def checkCompatible(filePath: str):
+# Returns `true` if the file at filePath is a valid pyson file, and false otherwise.
+def checkCompatible(filePath: str) -> bool:
     file = open(filePath,"r").read().split("\n")
     whole = []
-    # go through the items, check if they have correct types, and if there it is [dataname, type, value]
+    # Go through the items, check if they have correct types, and if there it is [dataname, type, value]
     for item in file:
         data = item.split(":")
         if len(data) != 3:
-            print("ERROR FOUND IN FORMATTING")
             return False
         match data[1]:
             case "str" | "int" | "list" | "float":
                 whole.append(data[0])
             case _:
-                print("ERROR FOUND AT UNKNOWN DATA")
                 return False
-    # check for duplications
+
+    # Returns true if a list has duplications, false otherwise
+    def duplications(list):
+        hash_table = {}
+        for item in list:
+            if item in hash_table:
+                return True
+            hash_table[item] = True
+        return False
+        
+    # Check for duplications
     if duplications(whole):
-        print("ERROR: Duplications present in pyson file.")
         return False
     
     return True
-# returns true if duplications, false if none
-def duplications(seq):
-    hash_table = {}
-    for item in seq:
-        if item in hash_table:
-            return True
-        hash_table[item] = True
-    return False
-## END OF FILE ##
