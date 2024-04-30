@@ -105,7 +105,7 @@ def write(filePath: str, datacall, datatype, data, mode = "a"):
 
 
 
-def updateData(filePath, name, data):
+def updateData(filePath, datacall, data):
     # loop through file
     file = open(filePath, "r")
     fileData = file.read().split("\n")
@@ -114,7 +114,7 @@ def updateData(filePath, name, data):
     foundItem = False
     for line in fileData:
         splitted = line.split(":")
-        if splitted[0] == name:
+        if splitted[0] == datacall:
             splitted[2] = data
             fileData[index] = ":".join(splitted)
             foundItem = True
