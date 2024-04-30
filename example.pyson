@@ -1,4 +1,4 @@
-str_example:str:this is a string
+str_example:str:this is a string: strings can include colons
 int_example:int:100
 list_example:list:this(*)is(*)a(*)list
 float_example:float:123.456

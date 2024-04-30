@@ -16,7 +16,7 @@ def getData(filePath, name) -> str | list[str] | float | int:
         if line == "":
             continue
         # Split the pyson value stored into [name, type, value]
-        splitted = line.split(":")
+        splitted = line.split(":", 2)
         # If the name is correct, store the value and type
         if splitted[0] == name:
             foundValue = splitted[2]
@@ -49,7 +49,7 @@ def getWhole(filePath) -> list[str | list[str] | float | int]:
     for item in open(filePath,"r").read().split("\n"):
         if item == "":
             continue
-        data: list[str] = item.split(":")
+        data: list[str] = item.split(":", 2)
         match data[1]:
             case "str":
                 whole.append(data[2])
@@ -91,7 +91,7 @@ def write(filePath: str, name: str, type: str, value: str | list[str] | int | fl
     for item in fileData:
         if item == "":
             continue
-        data = item.split(":")
+        data = item.split(":", 2)
         match data[1]:
             case "str" | "int" | "list" | "float":
                 names.append(data[0])
@@ -125,7 +125,7 @@ def updateData(filePath, name: str, data) -> None:
     index: int = 0
     foundItem = False
     for line in fileData:
-        splitted = line.split(":")
+        splitted = line.split(":", 2)
         if splitted[0] == name:
             splitted[2] = data
             fileData[index] = ":".join(splitted)
@@ -147,7 +147,7 @@ def checkCompatible(filePath: str) -> bool:
     for item in fileData:
         if item == "":
             continue
-        data = item.split(":")
+        data = item.split(":", 2)
         if len(data) < 3:
             print(f"Too few tokens: {str(len(data))}")
             return False
@@ -160,17 +160,11 @@ def checkCompatible(filePath: str) -> bool:
                 except Exception:
                     print(f"{data[2]} is not int")
                     return False
-                if len(data) > 3:
-                    print(f"Too many tokens: {len(data)}")
-                    return False
             case "float":
                 try:
                     float(data[2])
                 except Exception:
                     print(f"{data[2]} is not float")
-                    return False
-                if len(data) > 3:
-                    print(f"Too many tokens: {len(data)}")
                     return False
             case _:
                 return False
