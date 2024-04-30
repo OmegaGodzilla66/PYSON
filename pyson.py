@@ -9,10 +9,12 @@ def getData(filePath, name) -> str | list[str] | float | int:
     if not checkCompatible(filePath):
         raise Exception("File is not compatible with .pyson format.")
 
-    foundValue = None
-    foundType = None
+    foundValue: str = ""
+    foundType: str = ""
     # Loop through the lines in the file
     for line in open(filePath, "r").read().split("\n"):
+        if line == "":
+            continue
         # Split the pyson value stored into [name, type, value]
         splitted = line.split(":")
         # If the name is correct, store the value and type
@@ -21,7 +23,7 @@ def getData(filePath, name) -> str | list[str] | float | int:
             foundType = splitted[1]
             break
     # If the name desired is not in the file, raise an exception
-    if foundValue is None:
+    if foundValue == "":
         raise Exception(f"Data with name \"{name}\" not found. Maybe try a different file?")
     
     # Check what type it is
@@ -176,11 +178,11 @@ def checkCompatible(filePath: str) -> bool:
 
     # Returns true if a list has duplications, false otherwise
     def duplications(list: list[str]):
-        hash_table = {}
+        hashTable = {}
         for item in list:
-            if item in hash_table:
+            if item in hashTable:
                 return True
-            hash_table[item] = True
+            hashTable[item] = True
         return False
         
     # Check for duplications
