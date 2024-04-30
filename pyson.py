@@ -1,43 +1,41 @@
-## START OF FILE ##
-def getData(filePath,datacall):
+def getData(filePath, name) -> str | list[str] | float | int:
     """
     Inputs: 
     filePath - formatted like a normal file path (forward slash)
-    datacall: str - name of data that you are extracting
-    Outputs the data stored in pyson format that it's inserted as.
+    name: str - name of data that you are extracting
+    Returns the value from the pyson file with the desired name
     """
-    # Checks for .pyson compatability
+    # Raise an exception if the file is not pyson-compatible
     if not checkCompatible(filePath):
         raise Exception("File is not compatible with .pyson format.")
 
-    # found is the found value
-    # foundT is the found type
-    found = None
-    foundT = None
+    foundValue = None
+    foundType = None
     # Loop through the lines in the file
     for line in open(filePath, "r").read().split("\n"):
-        # split the pyson value stored into [name, type, value]
+        # Split the pyson value stored into [name, type, value]
         splitted = line.split(":")
-        # if correct name, fetch type & value
-        if splitted[0] == datacall:
-            found = splitted[2]
-            foundT = splitted[1]
-    # if nothing is found, raise an exception
-    if found is None:
-        raise Exception(f"Data At Value {datacall} Not Found. Maybe try a different file?")
+        # If the name is correct, store the value and type
+        if splitted[0] == name:
+            foundValue = splitted[2]
+            foundType = splitted[1]
+            break
+    # If the name desired is not in the file, raise an exception
+    if foundValue is None:
+        raise Exception(f"Data with name \"{name}\" not found. Maybe try a different file?")
     
-    # Match types
-    match foundT:
+    # Check what type it is
+    match foundType:
         case "str":
-            return str(found)
+            return str(foundValue)
         case "int":
-            return int(found)
+            return int(foundValue)
         case "float":
-            return float(found)
+            return float(foundValue)
         case "list":
-            return found.split("(*)")
+            return foundValue.split("(*)")
         case _:
-            raise Exception("Unreachable, should not happen")
+            raise Exception(f"Invalid pyson type {foundType}")
 
 # get all of the file, returned as an array of values
 def getWhole(filePath):
