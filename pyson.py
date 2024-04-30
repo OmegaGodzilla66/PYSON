@@ -25,7 +25,7 @@ def getData(filePath,datacall):
     # if nothing is found, raise an exception
     if found is None:
         raise Exception(f"Data At Value {datacall} Not Found. Maybe try a different file?")
-    
+
     # Match types
     match foundT:
         case "str":
@@ -116,7 +116,8 @@ def updateData(filePath, datacall, data):
         splitted = line.split(":")
         if splitted[0] == datacall:
             splitted[2] = data
-            fileData[index] = ":".join(splitted)
+            fileData[index] = splitted[0]+":"+splitted[1]+":"+splitted[2]
+            print(fileData)
             foundItem = True
             break
         index += 1
@@ -125,10 +126,10 @@ def updateData(filePath, datacall, data):
     # write to file
     open(filePath, "w").write("\n".join(fileData))
     return True
-    
-    
-            
-        
+
+
+
+
 # checks if file is compatible with pyson formatting
 
 def checkCompatible(filePath: str):
@@ -150,7 +151,7 @@ def checkCompatible(filePath: str):
     if duplications(whole):
         print("ERROR: Duplications present in pyson file.")
         return False
-    
+
     return True
 # returns true if duplications, false if none
 def duplications(seq):
