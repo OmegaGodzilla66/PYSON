@@ -37,17 +37,18 @@ def getData(filePath, name) -> str | list[str] | float | int:
         case _:
             raise Exception(f"Invalid pyson type {foundType}")
 
-# get all of the file, returned as an array of values
-def getWhole(filePath):
-    # Checks for .pyson compatability
+# Get the list of values from a pyson file
+def getWhole(filePath) -> list[str | list[str] | float | int]:
+    # Checks whether the file is valid pyson
     if not checkCompatible(filePath):
-        raise Exception("File is not compatible with pyson format.")
-    whole = []
+        raise Exception("File passed to getWhole() is not compatible with pyson format")
+
+    whole: list[str | list[str] | float | int] = []
     for item in open(filePath,"r").read().split("\n"):
-        data = item.split(":")
+        data: list[str] = item.split(":")
         match data[1]:
             case "str":
-                whole.append(str(data[2]))
+                whole.append(data[2])
             case "int":
                 whole.append(int(data[2]))
             case "float":
@@ -55,11 +56,8 @@ def getWhole(filePath):
             case "list":
                 whole.append(data[2].split("(*)"))
             case _:
-                print("ERROR: Unknown Datatype")
-                raise Exception(f"""Unknown data {data[1]} type found in {filePath} at call {data[0]}. Raw pyson data: {item}. Try checking if you have any external plugins that may be interfering with the pyson format. Or, if you entered the data manually, check if you made a typo. """)
-
+                raise Exception(f"Unknown type {data[1]} in {filePath} found during getWhole()")
     return whole
-
 
 # append pyson value to pyson file
 # TODO: optimize
