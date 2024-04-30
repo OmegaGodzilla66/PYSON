@@ -2,4 +2,3 @@ str_example:str:this is an updated string
 int_example:int:100
 list_example:list:this(*)is(*)a(*)list
 float_example:float:123.456
-write_example:list:this(*)is(*)a(*)new(*)list

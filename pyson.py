@@ -61,7 +61,15 @@ def getWhole(filePath) -> list[str | list[str] | float | int]:
 
 # Append pyson value to pyson file
 # TODO: optimize
-def write(filePath: str, name: str, type: str, value: str, mode = "a"):
+def write(filePath: str, name: str, type: str, value: str | list[str] | int | float, mode = "a"):
+    # Make value be a str
+    if isinstance(value, list):
+        value = "(*)".join(value)
+    if isinstance(value, float) or isinstance(value, int):
+        value = str(value)
+    if not isinstance(value, str):
+        raise Exception("Parameter value has invalid type")
+        
     if not (mode == "a" or mode == "w"):
         raise Exception("Invalid writing mode, must be 'a' or 'w'")
     # Checks for .pyson compatability
