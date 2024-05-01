@@ -1,4 +1,4 @@
-def getData(filePath, name) -> str | list[str] | float | int:
+def getData(filePath: str, name: str) -> str | list[str] | float | int:
     """
     Inputs: 
     filePath - formatted like a normal file path (forward slash)
@@ -65,7 +65,7 @@ def getWhole(filePath) -> list[str | list[str] | float | int]:
 
 # Append pyson value to pyson file
 # TODO: optimize
-def write(filePath: str, name: str, type: str, value: str | list[str] | int | float, mode = "a") -> None:
+def write(filePath: str, name: str, type: str, value: str | list[str] | int | float, mode: str = "a") -> None:
     # Create the file if it doesn't exist
     open(filePath, "a+").close()
 
@@ -111,9 +111,10 @@ def write(filePath: str, name: str, type: str, value: str | list[str] | int | fl
             float(value)
         case _:
             raise Exception(f"Data type {type} not supported")
-    toWrite = "\n" + name + ":" + type + ":" + value
-    with open(filePath, mode) as file:
-        file.write(toWrite)
+    toWrite = name + ":" + type + ":" + value
+    if mode == "a":
+        toWrite = "\n" + toWrite
+    open(filePath, mode).write(toWrite)
 
 
 def updateData(filePath, name: str, data) -> None:
@@ -123,9 +124,9 @@ def updateData(filePath, name: str, data) -> None:
     file.close()
     # Look through the data to find the value to update
     index: int = 0
-    foundItem = False
+    foundItem: bool = False
     for line in fileData:
-        splitted = line.split(":", 2)
+        splitted: list[str] = line.split(":", 2)
         if splitted[0] == name:
             splitted[2] = data
             fileData[index] = ":".join(splitted)
@@ -142,14 +143,13 @@ def updateData(filePath, name: str, data) -> None:
 # Returns `true` if the file at filePath is a valid pyson file, and false otherwise.
 def checkCompatible(filePath: str) -> bool:
     fileData: list[str] = open(filePath,"r").read().split("\n")
-    names: list[str] = []
+    names: set[str] = set()
     # Go through the items, check if they have correct types, and if there it is [dataname, type, value]
     for item in fileData:
         if item == "":
             continue
         data = item.split(":", 2)
         if len(data) < 3:
-            print(f"Too few tokens: {str(len(data))}")
             return False
         match data[1]:
             case "str" | "list":
@@ -158,30 +158,16 @@ def checkCompatible(filePath: str) -> bool:
                 try:
                     int(data[2])
                 except Exception:
-                    print(f"{data[2]} is not int")
                     return False
             case "float":
                 try:
                     float(data[2])
                 except Exception:
-                    print(f"{data[2]} is not float")
                     return False
             case _:
                 return False
-        names.append(data[0])
-
-    # Returns true if a list has duplications, false otherwise
-    def duplications(list: list[str]):
-        hashTable = {}
-        for item in list:
-            if item in hashTable:
-                return True
-            hashTable[item] = True
-        return False
-        
-    # Check for duplications
-    if duplications(names):
-        print("Duplications happened")
-        return False
+        if data[0] in names:
+            return False
+        names.add(data[0])
     
     return True
