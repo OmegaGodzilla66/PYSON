@@ -54,7 +54,10 @@ More supported types may be added.
 > I (computingSquid) have had to resort to drastic measures to get my pull request approved. coolSchnoodle was forced to say "uwu"
 
 0.0.5: <br>
-Wahoo! Porting to github!...oh shoot now I have to rename everything. 
+> Wahoo! Porting to github!...oh shoot now I have to rename everything.
+
+- OmegoGodzilla66
+
 0.0.4: <br>
 > HAHA I HAVE DONE IT! ... Wait no never mind I'm stupid
 
