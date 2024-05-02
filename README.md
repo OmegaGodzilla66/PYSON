@@ -20,6 +20,11 @@ Output: The item in the stored type with name `name` in file `filePath`<br>
 Required inputs: `filePath`<br>
 Output: A list of all datas in their respective types<br>
 
+#### write() ####
+Required inputs: `filePath`, `name`, `type`, `value`<br>
+Optional inputs: `mode` (default "a")<br>
+Write a value to a pyson file
+
 #### updateData() ####
 Required inputs: `filePath`, `name`, `data`<br>
 Updates entry `name` to contain value `data`<br>
