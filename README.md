@@ -25,6 +25,11 @@ Required inputs: `filePath`, `name`, `type`, `value`<br>
 Optional inputs: `mode` (default "a")<br>
 Write a value to a pyson file
 
+#### writeMultiple() ####
+Required inputs: `filePath`, `data`<br>
+Optional inputs: `mode` (default "a")<br>
+Write a dict of name to value to a pyson file (automatically figures out the type)
+
 #### updateData() ####
 Required inputs: `filePath`, `name`, `data`<br>
 Updates entry `name` to contain value `data`<br>
@@ -33,7 +38,7 @@ Output: Whether or not function call worked<br>
 #### isCompatible() ####
 Required inputs: `filePath`<br>
 Outputs: Bool<br>
-Checks if a file is compatible with .pyson file format. Returns True if so, returns False if not. <br>
+Checks if a file is compatible with .pyson file format. Returns True if so, returns False if not.<br>
 
 ## Supported Types ##
 There are 4 supported types: int, float, str, and list
