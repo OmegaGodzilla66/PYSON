@@ -1,5 +1,4 @@
-str_example:str:this is an updated string
+str_example:str:this is a string: strings can include colons
 int_example:int:100
 list_example:list:this(*)is(*)a(*)list
 float_example:float:123.456
-write_example:list:this(*)is(*)a(*)new(*)list
