@@ -9,8 +9,8 @@ The purpose of this project is to provide a python-based alternative to JSON. Th
 This project is now on pypi at https://pypi.org/project/pyson-data/ thanks to the hard work of @ComputingSquid
 
 ## How to Use ##
-<strong>THIS PROJECT IS NOT YET FINISHED! DOCUMENTATION IS ONLY SHOWN FOR COMPLETED FEATURES. SOME FEATURES MAY BREAK DUE TO CONTINUED DEVELOPMENT. IF YOU SEE A PROBLEM, PLEASE LET ME KNOW!</strong>
-<br>Belive it or not, this project is surprisingly easy to use. The only thing you have to do is `pip install pyson-data`! From then, you can just `import pyson-data`, and use functions as normal! Support for other languages may come soon. Support for this as a library (no copypaste needed) may be coming soon as well.
+<strong>THIS PROJECT IS NOT YET FINISHED! Documentation *IS ONLY SHOWN* FOR *COMPLETED FEATURES*. SOME FEATURES MAY BREAK DUE TO CONTINUED DEVELOPMENT. IF YOU SEE A PROBLEM, PLEASE LET ME KNOW!</strong>
+<br>Belive it or not, this project is surprisingly easy to use. The only thing you have to do is `pip install pyson-data`! From then, you can just `import pyson-data`, and use functions as normal! Support for other languages may come soon.
 <br><strong>The PYSON format does NOT include a newline at the end of the file, files with a newline at the end will be considered invalid</strong>
 ### List of Functions ###
 
@@ -43,6 +43,8 @@ A float is a decimal number, that can be any value<br>
 More supported types may be added. 
 
 ## Changelog ##
+v0.1.0: Released PYSON to pypi
+v0.0.9: Liam did dumb fixes that din't really help (nasty)
 v0.0.8: Added updateData function
 v0.0.7: Fixed errors, refactored bad code
 v0.0.6: Added floats
