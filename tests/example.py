@@ -1,4 +1,5 @@
-import pyson # to use this in your project, simply change the name from "pyson" to the name of the file you're importing it from
+raise Exception("This is in a different directory as pyson.py for some reason so it can't be imported normally")
+# to use this in your project, simply change the name from "pyson" to the name of the file you're importing it from
 import os
 
 # Read test

@@ -137,6 +137,22 @@ def write(filePath: str, name: str, type: str, value: PysonValue, mode: str = "a
         toWrite = "\n" + toWrite
     open(filePath, mode).write(toWrite)
 
+def writeMultiple(filePath: str, data: dict[str, PysonValue], mode: str = "a") -> None:
+    for tup in data.items():
+        name, value = tup
+        type = ""
+        if isinstance(value, list):
+            type = "list"
+        if isinstance(value, int):
+            type = "int"
+        if isinstance(value, float):
+            type = "float"
+        if isinstance(value, str):
+            type = "str"
+        if type == "":
+            raise Exception("Invalid pyson typein writeMultiple()")
+        write(filePath, name, type, value, mode)
+        mode = "a"
 
 def updateData(filePath: str, name: str, data: str) -> None:
     """
