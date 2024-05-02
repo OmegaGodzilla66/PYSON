@@ -1,0 +1,24 @@
+[project]
+name = "pyson_data"
+version = "0.0.4"
+authors = [
+  { name="josh-co", email="author@example.com" },
+]
+description = "Pyson package for .pyson data format"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/ProbablyComputingSquid/PYSON/"
+Issues = "https://github.com/ProbablyComputingSquid/PYSON/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[tool.hatch.build.targets.wheel]
+packages = ["src/pyson_data"]
