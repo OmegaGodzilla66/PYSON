@@ -7,7 +7,7 @@ The purpose of this project is to provide a python-based alternative to JSON. Th
 
 ## How to Use ##
 **THIS PROJECT IS NOT YET FINISHED! DOCUMENTATION IS ONLY SHOWN FOR COMPLETED FEATURES. SOME FEATURES MAY BREAK DUE TO CONTINUED DEVELOPMENT. IF YOU SEE A PROBLEM, PLEASE LET ME KNOW!**
-<br>Belive it or not, this project is surprisingly easy to use. The only thing you have to do is copy/paste the contents of pyson.py into your own Python project! From then, you can just `import pyson`, and use functions as normal! Support for other languages may come soon. Support for this as a library (no copypaste needed) may be coming soon as well.<br>
+<br>Believe it or not, this project is surprisingly easy to use.<br><br> The only thing you have to do is `pip install pyson-data` ! From then, you can just `import pyson_data as pyson` <ul>**NOTE: due to some goofups by computingsquid late at night, turns out you can't use `-` in a package name, so when you pip install, use `-` but when you import, use `_`**</ul>, and use functions as normal! Support for other languages may come soon.<br>
 **The PYSON format does NOT include a newline at the end of the file, files with a newline at the end will be considered invalid**
 ### List of Functions ###
 
@@ -40,6 +40,8 @@ There are 4 supported types: int, float, str, and list
 More supported types may be added. 
 
 ## Changelog ##
+- v0.1.0-alpha: package & release deployed to pypi, merged code to main, and resolved all merge conflicts! truly a cause for celebration 🎉
+- v0.0.9: coolSchnoodle and nmd102 made code fixes and README fixes
 - v0.0.8: Added updateData function
 - v0.0.7: Fixed errors, refactored bad code
 - v0.0.6: Added floats
