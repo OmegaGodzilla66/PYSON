@@ -4,7 +4,9 @@
 
 ## Overview ##
 The purpose of this project is to provide a python-based alternative to JSON. This is a (almost) fully functional JSON-inspired data management system!
-Major news! This project is now on pypi thanks to the hard work of @ComputingSquid
+
+## Major news! ##
+This project is now on pypi at https://pypi.org/project/pyson-data/ thanks to the hard work of @ComputingSquid
 
 ## How to Use ##
 <strong>THIS PROJECT IS NOT YET FINISHED! DOCUMENTATION IS ONLY SHOWN FOR COMPLETED FEATURES. SOME FEATURES MAY BREAK DUE TO CONTINUED DEVELOPMENT. IF YOU SEE A PROBLEM, PLEASE LET ME KNOW!</strong>
