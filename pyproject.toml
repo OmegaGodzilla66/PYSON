@@ -2,9 +2,9 @@
 name = "pyson_data"
 version = "0.0.4"
 authors = [
-  { name="josh-co", email="author@example.com" },
+  { name="josh-co", email="omegaraspberrypi@gmail.com" },
 ]
-description = "Pyson package for .pyson data format"
+description = "Pyson package for .pyson data format support"
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
