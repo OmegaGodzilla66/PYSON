@@ -22,6 +22,7 @@ print("---APPEND TEST-------")
 pyson.write("newfile.pyson", "integer", "int", 123, "a")
 pyson.write("newfile.pyson", "floating-point", "float", 3.14, "a")
 pyson.write("newfile.pyson", "string list", "list", ["this is a list", "of strings"])
+writeMultiple("example.pyson", {"test": "value", "integer": 69, "list1": ["1","2"], "pypi": 3.1415962}
 print(pyson.getWhole("newfile.pyson"))
 
 # Compatability test
