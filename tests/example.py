@@ -1,6 +1,6 @@
-raise Exception("This is in a different directory as pyson.py for some reason so it can't be imported normally")
-# to use this in your project, simply change the name from "pyson" to the name of the file you're importing it from
 import os
+import pyson_data as pyson
+# this is an example of how to use the pyson module
 
 # Read test
 print("-----READ TEST-------")
@@ -22,7 +22,7 @@ print("---APPEND TEST-------")
 pyson.write("newfile.pyson", "integer", "int", 123, "a")
 pyson.write("newfile.pyson", "floating-point", "float", 3.14, "a")
 pyson.write("newfile.pyson", "string list", "list", ["this is a list", "of strings"])
-writeMultiple("example.pyson", {"test": "value", "integer": 69, "list1": ["1","2"], "pypi": 3.1415962}
+pyson.writeMultiple("example.pyson", {"test": "value", "integer": 69, "list1": ["1","2"], "pypi": 3.1415962}
 print(pyson.getWhole("newfile.pyson"))
 
 # Compatability test

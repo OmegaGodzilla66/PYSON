@@ -163,7 +163,7 @@ def updateData(filePath: str, name: str, data: str) -> None:
         data: str - The value to update as a string
     Return value: None
     """
-    
+    data=str(data)
     # Read in the data
     file = open(filePath, "r")
     fileData: list[str] = file.read().split("\n")
