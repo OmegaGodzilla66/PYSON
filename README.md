@@ -10,35 +10,12 @@ The purpose of this project is to provide a python-based alternative to JSON. Th
 <br>Believe it or not, this project is surprisingly easy to use.<br>
 <br> The only thing you have to do is `pip install pyson-data` ! From then, you can just `import pyson_data as pyson`, and use functions as normal!
 Support for other languages may come soon.<br>
-### List of Functions ###
 
-#### getData() ####
-Required inputs: `filePath`, `name`<br>
-Output: The item in the stored type with name `name` in file `filePath`<br>
+## quickstart ## 
+TODO: write later
 
-#### getWhole() ####
-Required inputs: `filePath`<br>
-Output: A list of all datas in their respective types<br>
-
-#### write() ####
-Required inputs: `filePath`, `name`, `type`, `value`<br>
-Optional inputs: `mode` (default "a")<br>
-Write a value to a pyson file
-
-#### writeMultiple() ####
-Required inputs: `filePath`, `data`<br>
-Optional inputs: `mode` (default "a")<br>
-Write a dict of name to value to a pyson file (automatically figures out the type)
-
-#### updateData() ####
-Required inputs: `filePath`, `name`, `data`<br>
-Updates entry `name` to contain value `data`<br>
-Output: Whether or not function call worked<br>
-
-#### isCompatible() ####
-Required inputs: `filePath`<br>
-Outputs: Bool<br>
-Checks if a file is compatible with .pyson file format. Returns True if so, returns False if not.<br>
+## documentation ##
+Documentation has been moved to the project wiki [here](https://github.com/OmegaGodzilla66/PYSON/wiki) to decrease clutter in the README.
 
 ## Supported Types ##
 There are 4 supported types: int, float, str, and list
@@ -52,6 +29,7 @@ Currently there is no escaping support. I don't really know why you would use th
 More supported types may be added. 
 
 ## Changelog ##
+- v0.1.1: Added writeMultiple function, various bug fixes
 - v0.1.0-alpha: package & release deployed to pypi, merged code to main, and resolved all merge conflicts! truly a cause for celebration 🎉
 - v0.0.9: coolSchnoodle and nmd102 made code fixes and README fixes
 - v0.0.8: Added updateData function
