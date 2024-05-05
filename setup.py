@@ -6,13 +6,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
      name='pyson_data',
-     version='0.1.2',
+     version='0.1.3',
      scripts=['pyson_data'],
      author="ComputingSquid",
      description="Provides support for storing data in .pyson format",
      long_description=long_description,
      long_description_content_type="text/markdown",
-     url="https://github.com/ProbablyComputingSquid/PYSON",
+     url="https://github.com/OmegaGodzilla66/PYSON",
      packages=setuptools.find_packages(),
      classifiers=[
          "Programming Language :: Python :: 3",

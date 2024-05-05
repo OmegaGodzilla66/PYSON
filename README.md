@@ -1,5 +1,5 @@
 # PYSON #
-##### Maintained by: [OmegaGodzilla66](https://github.com/OmegaGodzilla66), [ComputingSquid](https://github.com/ProbablyComputingSquid), and [CoolSchnoodle](https://github.com/coolSchnoodle) #####
+##### Maintained by: [OmegaGodzilla66](https://github.com/OmegaGodzilla66), [ComputingSquid](https://github.com/ProbablyComputingSquid), [CoolSchnoodle](https://github.com/coolSchnoodle), and [nmd102](https://github.com/nmd102) #####
 
 
 ## Overview ##
@@ -29,6 +29,7 @@ Currently there is no escaping support. I don't really know why you would use th
 More supported types may be added. 
 
 ## Changelog ##
+- v0.1.2: Refactored pyson.py
 - v0.1.1: Added writeMultiple function, various bug fixes
 - v0.1.0-alpha: package & release deployed to pypi, merged code to main, and resolved all merge conflicts! truly a cause for celebration 🎉
 - v0.0.9: coolSchnoodle and nmd102 made code fixes and README fixes
