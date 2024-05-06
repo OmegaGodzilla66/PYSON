@@ -12,10 +12,10 @@ The purpose of this project is to provide a python-based alternative to JSON. Th
 Support for other languages may come soon.<br>
 
 ## quickstart ## 
-TODO: write later
+Refer to the project wiki [here](https://github.com/OmegaGodzilla66/PYSON/wiki)
 
 ## documentation ##
-Documentation has been moved to the project wiki [here](https://github.com/OmegaGodzilla66/PYSON/wiki) to decrease clutter in the README.
+Documentation has also been moved to the project wiki [here](https://github.com/OmegaGodzilla66/PYSON/wiki) to decrease clutter in the README.
 
 ## Supported Types ##
 There are 4 supported types: int, float, str, and list
