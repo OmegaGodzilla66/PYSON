@@ -1,6 +1,6 @@
 [project]
 name = "pyson_data"
-version = "0.1.1.1"
+version = "0.1.2"
 authors = [
   { name="josh-co", email="omegaraspberrypi@gmail.com" },
 ]
@@ -18,7 +18,7 @@ Homepage = "https://github.com/ProbablyComputingSquid/PYSON/"
 Issues = "https://github.com/ProbablyComputingSquid/PYSON/issues"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
 [tool.hatch.build.targets.wheel]
 packages = ["src/pyson_data"]
