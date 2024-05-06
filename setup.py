@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 
 setuptools.setup(
-     scripts=['pyson_data'],
+     scripts=['src/pyson_data'],
      author="josh-co-dev",
      description="Provides support for storing data in .pyson format",
      long_description=long_description,
