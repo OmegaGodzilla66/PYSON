@@ -134,6 +134,14 @@ def write(filepath: str, name: str, type: str, value: PysonValue, mode: str = "a
 
 
 def writeMultiple(filepath: str, data: dict[str, PysonValue], mode: str = "a") -> None:
+    """
+    Parameters:
+        filepath: str - File path to write to
+        data: dict[str, PysonValue] - Dictionary of {name : value}
+        mode (optional):  str- What mode to use when writing the file.
+    `mode` can be either 'w' (overwrite old data) or 'a' (append to the file), defaults to 'a'.
+    Return value: None
+    """
     for tup in data.items():
         name, value = tup
         type = ""
