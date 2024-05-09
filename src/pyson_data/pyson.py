@@ -2,7 +2,7 @@
 PysonValue = str | list[str] | float | int
 
 
-def getData(filepath: str, name: str) -> PysonValue:
+def getData(filePath: str, name: str) -> PysonValue:
     """
     Parameters:
         filepath: str - formatted like a normal file path (forward slash)
@@ -11,11 +11,11 @@ def getData(filepath: str, name: str) -> PysonValue:
     """
 
     # Raise an exception if the file is not pyson-compatible
-    if not checkCompatible(filepath):
+    if not checkCompatible(filePath):
         raise Exception("File is not compatible with .pyson format.")
 
     # Loop through the lines in the file
-    for line in open(filepath, "r").read().split("\n"):
+    for line in open(filePath, "r").read().split("\n"):
         if line == "":
             continue
         # Split the pyson value stored into [name, type, value]
@@ -37,7 +37,7 @@ def getData(filepath: str, name: str) -> PysonValue:
     raise Exception(f"Data with name \"{name}\" not found. Maybe try a different file?")
 
 
-def getWhole(filepath: str) -> list[PysonValue]:
+def getList(filePath: str) -> list[PysonValue]:
     """
     Parameters:
         filepath: str - the file to get all the pyson values from
@@ -46,11 +46,11 @@ def getWhole(filepath: str) -> list[PysonValue]:
     """
 
     # Checks whether the file is valid pyson
-    if not checkCompatible(filepath):
-        raise Exception("File passed to getWhole() is not compatible with pyson format")
+    if not checkCompatible(filePath):
+        raise Exception("File passed to getList() is not compatible with pyson format")
 
     whole: list[PysonValue] = []
-    for item in open(filepath, "r").read().split("\n"):
+    for item in open(filePath, "r").read().split("\n"):
         if item == "":
             continue
         data: list[str] = item.split(":", 2)
@@ -64,13 +64,36 @@ def getWhole(filepath: str) -> list[PysonValue]:
             case "list":
                 whole.append(data[2].split("(*)"))
             case _:
-                raise Exception(f"Unknown type {data[1]} in {filepath} found during getWhole()")
+                raise Exception(f"Unknown type {data[1]} in {filePath} found during getList()")
     return whole
 
+def getDict(filePath: str) -> dict[str, PysonValue]:
+
+    if not checkCompatible(filePath):
+        raise Exception("File passed to getDict() is not compatible with the pyson format")
+
+    data: dict[str, PysonValue] = dict()
+    for line in open(filePath, "r").read().split("\n"):
+        if line == "":
+            continue
+        name, type, value = line.split(":", 2)
+        match type:
+            case "str":
+                data[name] = value
+            case "int":
+                data[name] = int(value)
+            case "float":
+                data[name] = float(value)
+            case "list":
+                data[name] = value.split("(*)")
+            case _:
+                raise Exception(f"Unknown type {type} in {filePath} found during getDict()")
+    return data
+    
 
 # Append pyson value to pyson file
 # TODO: optimize
-def write(filepath: str, name: str, type: str, value: PysonValue, mode: str = "a") -> None:
+def write(filePath: str, name: str, type: str, value: PysonValue, mode: str = "a") -> None:
     """
     Parameters:
         filepath: str - File path to write to
@@ -83,7 +106,7 @@ def write(filepath: str, name: str, type: str, value: PysonValue, mode: str = "a
     """
 
     # Create the file if it doesn't exist
-    open(filepath, "a+").close()
+    open(filePath, "a+").close()
 
     # Make value be a str
     if isinstance(value, list):
@@ -97,10 +120,10 @@ def write(filepath: str, name: str, type: str, value: PysonValue, mode: str = "a
     if not (mode == "a" or mode == "w"):
         raise Exception("Invalid writing mode, must be 'a' (append) or 'w' (write)")
     # Checks for .pyson compatability
-    if not checkCompatible(filepath):
+    if not checkCompatible(filePath):
         raise Exception("File is not compatible with .pyson format.")
 
-    fileData: list[str] = open(filepath, "r").read().split("\n")
+    fileData: list[str] = open(filePath, "r").read().split("\n")
     names: list[str] = []
 
     data = ""
@@ -130,10 +153,10 @@ def write(filepath: str, name: str, type: str, value: PysonValue, mode: str = "a
     toWrite = name + ":" + type + ":" + value
     if mode == "a":
         toWrite = "\n" + toWrite
-    open(filepath, mode).write(toWrite)
+    open(filePath, mode).write(toWrite)
 
 
-def writeMultiple(filepath: str, data: dict[str, PysonValue], mode: str = "a") -> None:
+def writeMultiple(filePath: str, data: dict[str, PysonValue], mode: str = "a") -> None:
     """
     Parameters:
         filepath: str - File path to write to
@@ -155,11 +178,11 @@ def writeMultiple(filepath: str, data: dict[str, PysonValue], mode: str = "a") -
             type = "str"
         if type == "":
             raise Exception("Invalid pyson typein writeMultiple()")
-        write(filepath, name, type, value, mode)
+        write(filePath, name, type, value, mode)
         mode = "a"
 
 
-def updateData(filepath: str, name: str, data: str) -> None:
+def updateData(filePath: str, name: str, data: str) -> None:
     """
     Note: the type of data currently cannot be updated
     Parameters:
@@ -170,7 +193,7 @@ def updateData(filepath: str, name: str, data: str) -> None:
     """
     data = str(data)
     # Read in the data
-    file = open(filepath, "r")
+    file = open(filePath, "r")
     fileData: list[str] = file.read().split("\n")
     file.close()
     # Look through the data to find the value to update
@@ -188,11 +211,11 @@ def updateData(filepath: str, name: str, data: str) -> None:
     if not foundItem:
         raise Exception("Couldn't write to non-existent item")
     # Write out the data
-    open(filepath, "w").write("\n".join(fileData))
+    open(filePath, "w").write("\n".join(fileData))
 
 
 # Returns `true` if the file at filePath is a valid pyson file, and false otherwise.
-def checkCompatible(filepath: str) -> bool:
+def checkCompatible(filePath: str) -> bool:
     """
     Parameters:
         filepath: str - Path to the file that you want to check whether it is compatible
@@ -201,7 +224,7 @@ def checkCompatible(filepath: str) -> bool:
         False if the file at filePath is not valid pyson
     """
 
-    fileData: list[str] = open(filepath, "r").read().split("\n")
+    fileData: list[str] = open(filePath, "r").read().split("\n")
     names: set[str] = set()
     # Go through the items, check if they have correct types, and if it is [dataname, type, value]
     for item in fileData:

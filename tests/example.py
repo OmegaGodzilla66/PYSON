@@ -9,10 +9,7 @@ print(pyson.getData("example.pyson", "str_example"))
 print(pyson.getData("example.pyson", "int_example"))
 print(pyson.getData("example.pyson", "list_example"))
 print(pyson.getData("example.pyson", "float_example"))
-
-# Whole test
-print("---WHOLE TEST--------")
-print(pyson.getWhole("example.pyson"))
+print(pyson.getList("example.pyson"))
 
 # Write test
 print("---WRITE TEST--------")
@@ -24,7 +21,7 @@ pyson.write("newfile.pyson", "integer", "int", 123, "a")
 pyson.write("newfile.pyson", "floating-point", "float", 3.14, "a")
 pyson.write("newfile.pyson", "string list", "list", ["this is a list", "of strings"])
 pyson.writeMultiple("example.pyson", {"test": "value", "integer": 69, "list1": ["1", "2"], "pypi": 3.1415962})
-print(pyson.getWhole("newfile.pyson"))
+print(pyson.getList("newfile.pyson"))
 
 # Compatability test
 print("---COMPATABILITY TEST------")
