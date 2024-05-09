@@ -37,7 +37,7 @@ def getData(filepath: str, name: str) -> PysonValue:
     raise Exception(f"Data with name \"{name}\" not found. Maybe try a different file?")
 
 
-def getWhole(filepath: str) -> list[PysonValue]:
+def getList(filePath: str) -> list[PysonValue]:
     """
     Parameters:
         filepath: str - the file to get all the pyson values from
@@ -46,11 +46,11 @@ def getWhole(filepath: str) -> list[PysonValue]:
     """
 
     # Checks whether the file is valid pyson
-    if not checkCompatible(filepath):
-        raise Exception("File passed to getWhole() is not compatible with pyson format")
+    if not checkCompatible(filePath):
+        raise Exception("File passed to getList() is not compatible with pyson format")
 
     whole: list[PysonValue] = []
-    for item in open(filepath, "r").read().split("\n"):
+    for item in open(filePath, "r").read().split("\n"):
         if item == "":
             continue
         data: list[str] = item.split(":", 2)
@@ -64,13 +64,13 @@ def getWhole(filepath: str) -> list[PysonValue]:
             case "list":
                 whole.append(data[2].split("(*)"))
             case _:
-                raise Exception(f"Unknown type {data[1]} in {filepath} found during getWhole()")
+                raise Exception(f"Unknown type {data[1]} in {filePath} found during getList()")
     return whole
 
-def getHashmap(filePath: str) -> dict[str, PysonValue]:
+def getDict(filePath: str) -> dict[str, PysonValue]:
 
     if not checkCompatible(filePath):
-        raise Exception("File passed to getHashmap() is not compatible with the pyson format")
+        raise Exception("File passed to getDict() is not compatible with the pyson format")
 
     data: dict[str, PysonValue] = dict()
     for line in open(filePath, "r").read().split("\n"):
@@ -87,7 +87,7 @@ def getHashmap(filePath: str) -> dict[str, PysonValue]:
             case "list":
                 data[name] = value.split("(*)")
             case _:
-                raise Exception(f"Unknown type {type} in {filePath} found during getHashmap()")
+                raise Exception(f"Unknown type {type} in {filePath} found during getDict()")
     return data
     
 
