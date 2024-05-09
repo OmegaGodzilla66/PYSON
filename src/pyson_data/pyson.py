@@ -67,6 +67,29 @@ def getWhole(filepath: str) -> list[PysonValue]:
                 raise Exception(f"Unknown type {data[1]} in {filepath} found during getWhole()")
     return whole
 
+def getHashmap(filePath: str) -> dict[str, PysonValue]:
+
+    if not checkCompatible(filePath):
+        raise Exception("File passed to getHashmap() is not compatible with the pyson format")
+
+    data: dict[str, PysonValue] = dict()
+    for line in open(filePath, "r").read().split("\n"):
+        if line == "":
+            continue
+        name, type, value = line.split(":", 2)
+        match type:
+            case "str":
+                data[name] = value
+            case "int":
+                data[name] = int(value)
+            case "float":
+                data[name] = float(value)
+            case "list":
+                data[name] = value.split("(*)")
+            case _:
+                raise Exception(f"Unknown type {type} in {filePath} found during getHashmap()")
+    return data
+    
 
 # Append pyson value to pyson file
 # TODO: optimize
