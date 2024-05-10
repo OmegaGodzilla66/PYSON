@@ -6,27 +6,25 @@
 The purpose of this project is to provide a python-based alternative to JSON. This is a (almost) fully functional JSON-inspired data management system!
 
 ## How to Use ##
-**THIS PROJECT IS NOT YET FINISHED! DOCUMENTATION IS ONLY SHOWN FOR COMPLETED FEATURES. SOME FEATURES MAY BREAK DUE TO CONTINUED DEVELOPMENT. IF YOU SEE A PROBLEM, PLEASE LET ME KNOW!**
-<br>Believe it or not, this project is surprisingly easy to use.<br>
-<br> The only thing you have to do is `pip install pyson-data` ! From then, you can just `import pyson_data as pyson`, and use functions as normal!
+This is a pip package, so to use this in python you can just `pip install pyson-data`.
+From there, you can just `import pyson_data as pyson`.
 Support for other languages may come soon.<br>
 
-## quickstart ## 
+## Quickstart ##
 Refer to the project wiki [here](https://github.com/OmegaGodzilla66/PYSON/wiki)
 
-## documentation ##
+## Documentation ##
 Documentation has also been moved to the project wiki [here](https://github.com/OmegaGodzilla66/PYSON/wiki) to decrease clutter in the README.
 
 ## Supported Types ##
 There are 4 supported types: int, float, str, and list
 <br><br>
-- An int is a whole number that can be any value<br>
-- A str is a list of text (quotes not required)<br>
+- An int is a whole number that can be any valu
+- A str is a list of text (quotes not required)
 - A list is a list of values, which currently have to all be strings. List items are seperated by the (*) seperator.
-Currently there is no escaping support. I don't really know why you would use that value normally in a list. <br> 
-- A float is a decimal number, that can be any value<br>
-
-More supported types may be added. 
+Currently there is no escaping support. I don't really know why you would use that value normally in a list.
+- A float is a decimal number, that can be any value representable by a 64-bit floating point number.
+<br>More supported types may be added  at some point in the future. 
 
 ## Changelog ##
 - v0.1.3: Added getDict function
