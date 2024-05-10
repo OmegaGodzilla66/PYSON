@@ -1,6 +1,2 @@
-#from .pyson import getData, getList, write, writeMultiple, updateData, checkCompatible, getDict
+# Becuase the entire source code of pyson_data is in pyson.py, this is all we need
 from .pyson import *
-# are you happy now, Eli?
-def hello():
-    print("hello world")
-    print("I love testing in production")
