@@ -3,11 +3,14 @@ PysonValue = str | list[str] | float | int
 
 
 def getData(filePath: str, name: str) -> PysonValue:
-    """
-    Parameters:
-        filepath: str - formatted like a normal file path (forward slash)
-        name: str - name of data that you are extracting
-    Return value: the value from the pyson file with name from the name parameter
+    """Extracts a single item's value from a .pyson file
+    
+    Args:
+        filepath (str): Filepath location of pyson file 
+        name (str): Name of data that you are extracting
+        
+    Returns: 
+        PysonValue: The value of the item you extracted from the pyson file
     """
 
     # Raise an exception if the file is not pyson-compatible
@@ -38,11 +41,13 @@ def getData(filePath: str, name: str) -> PysonValue:
 
 
 def getList(filePath: str) -> list[PysonValue]:
-    """
-    Parameters:
-        filepath: str - the file to get all the pyson values from
-    Return value:
-        A list of all the pyson values from the file
+    """Extracts all values of items from a .pyson file in list format
+    
+    Args:
+        filePath (str): the file to extract the pyson values from
+        
+    Returns:
+        list: A list of all the pyson values from the file
     """
 
     # Checks whether the file is valid pyson
@@ -68,6 +73,14 @@ def getList(filePath: str) -> list[PysonValue]:
     return whole
 
 def getDict(filePath: str) -> dict[str, PysonValue]:
+    """Fetches all items from a .pyson file and returns a hashmap of {name:value}
+    
+    Args:
+        filePath (str): the file to extract values from
+    
+    Returns:
+        dict: A dict of {name : value} with all the pyson values from the file 
+    """
 
     if not checkCompatible(filePath):
         raise Exception("File passed to getDict() is not compatible with the pyson format")
@@ -94,15 +107,19 @@ def getDict(filePath: str) -> dict[str, PysonValue]:
 # Append pyson value to pyson file
 # TODO: optimize
 def write(filePath: str, name: str, type: str, value: PysonValue, mode: str = "a") -> None:
-    """
-    Parameters:
-        filepath: str - File path to write to
-        name: str - Name of the PysonValue to write
-        type: str - Type of the PysonValue to write
-        value: PysonValue - Value to insert into the file
-        mode (optional):  str- What mode to use when writing the file.
-    `mode` can be either 'w' (overwrite old data) or 'a' (append to the file), defaults to 'a'.
-    Return value: None
+    """Writes/appends single value to .pyson file
+    
+    Args:
+        filepath (str): File path to write to
+        name (str): Name of the PysonValue to write
+        type (str): Type of the PysonValue to write
+        value (PysonValue): Value to insert into the file
+        mode (str):  What mode to use when writing the file.
+            mode can be either 'w' (overwrite old data) or 'a' (append to the file)
+            (default is 'a')
+            
+    Returns: 
+        None
     """
 
     # Create the file if it doesn't exist
@@ -157,13 +174,17 @@ def write(filePath: str, name: str, type: str, value: PysonValue, mode: str = "a
 
 
 def writeMultiple(filePath: str, data: dict[str, PysonValue], mode: str = "a") -> None:
-    """
-    Parameters:
-        filepath: str - File path to write to
-        data: dict[str, PysonValue] - Dictionary of {name : value}
-        mode (optional):  str- What mode to use when writing the file.
-    `mode` can be either 'w' (overwrite old data) or 'a' (append to the file), defaults to 'a'.
-    Return value: None
+    """Writes/appends multiple pyson values to a file
+    
+    Args:
+        filepath (str): File path to write to
+        data (dict[str, PysonValue]): Dictionary of {name : value}
+         mode (str):  What mode to use when writing the file.
+            mode can be either 'w' (overwrite old data) or 'a' (append to the file)
+            (default is 'a')
+    
+    Returns: 
+        None
     """
     for tup in data.items():
         name, value = tup
@@ -177,19 +198,21 @@ def writeMultiple(filePath: str, data: dict[str, PysonValue], mode: str = "a") -
         if isinstance(value, str):
             type = "str"
         if type == "":
-            raise Exception("Invalid pyson typein writeMultiple()")
+            raise Exception("Invalid pyson type in writeMultiple()")
         write(filePath, name, type, value, mode)
         mode = "a"
 
 
 def updateData(filePath: str, name: str, data: str) -> None:
-    """
+    """Updates value of item in .pyson file
     Note: the type of data currently cannot be updated
-    Parameters:
-        filepath: str - File path where the value is
-        name: str - Name of the data to update
-        data: str - The value to update as a string
-    Return value: None
+    
+    Args:
+        filepath (str): File path where the value is
+        name (str): Name of the data to update
+        data (str): The value to update as a string
+        
+    Returns: None
     """
     data = str(data)
     # Read in the data
@@ -216,12 +239,12 @@ def updateData(filePath: str, name: str, data: str) -> None:
 
 # Returns `true` if the file at filePath is a valid pyson file, and false otherwise.
 def checkCompatible(filePath: str) -> bool:
-    """
-    Parameters:
-        filepath: str - Path to the file that you want to check whether it is compatible
-    Return value:
-        True if the file at filePath is valid pyson
-        False if the file at filePath is not valid pyson
+    """Checks if file is compatible with .pyson format
+    
+    Args:
+        filepath (str): Path to the file that you want to check whether it is compatible
+    Returns:
+        bool: a bool that indicates whether or not a file is valid pyson
     """
 
     fileData: list[str] = open(filePath, "r").read().split("\n")
