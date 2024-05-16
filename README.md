@@ -1,6 +1,15 @@
 # PYSON #
 ##### Maintained by: [OmegaGodzilla66](https://github.com/OmegaGodzilla66), [ComputingSquid](https://github.com/ProbablyComputingSquid), [CoolSchnoodle](https://github.com/CoolSchnoodle), and [nmd102](https://github.com/nmd102) #####
 
+![GitHub Repo stars](https://img.shields.io/github/stars/OmegaGodzilla66/PYSON)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/OmegaGodzilla66/PYSON/python-publish.yml)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/OmegaGodzilla66/PYSON)
+![GitHub last commit](https://img.shields.io/github/last-commit/OmegaGodzilla66/PYSON)
+![GitHub Release](https://img.shields.io/github/v/release/OmegaGodzilla66/PYSON)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/OmegaGodzilla66/PYSON/latest)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/pyson-data)
+
+
 
 ## Overview ##
 The purpose of this project is to provide a python-based alternative to JSON. This is a (almost) fully functional JSON-inspired data management system!
