@@ -6,13 +6,13 @@ class Type:
         """
         if type not in ["int", "float", "str", "list"]:
             raise ValueError(f"Invalid type {type}")
-        self.type: str = type
+        self._type: str = type
 
     def __str__(self) -> str:
         """
         String representation of the Type
         """
-        return self.type
+        return self._type
 
     def __repr__(self) -> str:
         """
@@ -20,13 +20,25 @@ class Type:
         Unlike Type.__str__(), this method will include the fact that
         this is a Type object from the pyson_data package
         """
-        return f"pyson_data.Type({self.type})"
+        return f"pyson_data.Type({self._type})"
 
     def __reduce__(self) -> tuple:
         """
         Reduce the Type object so it can be pickled
         """
-        return (self.__class__, (self.type,))
+        return (self.__class__, (self._type,))
+
+    def to_python_type(self) -> type:
+        match self._type:
+            case "int":
+                return int
+            case "float":
+                return float
+            case "str":
+                return str
+            case "list":
+                return list[str]
+        assert False, f"Unreachable code: pyson_data.Type with invalid type {self._type}"
 
 class Value:
     def __init__(self, value: int | float | str | list[str]) -> None:
@@ -34,17 +46,17 @@ class Value:
         Initialize a new pyson Value
         Takes 1 argument, which must be either an int, float, str, or list of str
         """
-        self.value: int | float | str | list[str] = value
+        self._value: int | float | str | list[str] = value
         if isinstance(value, int):
-            self.type = Type("int")
+            self._type = Type("int")
         elif isinstance(value, float):
-            self.type = Type("float")
+            self._type = Type("float")
         elif isinstance(value, str):
-            self.type = Type("str")
+            self._type = Type("str")
         elif isinstance(value, list):
             if any(not isinstance(item, str) for item in value):
                 raise ValueError("Lists in pyson must contain only strings")
-            self.type = Type("list")
+            self._type = Type("list")
         else:
             raise ValueError(f"Invalid pyson type type {type(value)}")
 
@@ -52,7 +64,7 @@ class Value:
         """
         String representation of the Value
         """
-        return f"{self.type}:{self.value}"
+        return f"{self._type}:{self._value}"
 
     def __repr__(self) -> str:
         """
@@ -60,10 +72,35 @@ class Value:
         Unlike Value.__str__(), this method will include the fact that
         this is a Value object from the pyson_data package
         """
-        return f"pyson_data.Value(type = {self.type}, value = {self.value})"
+        return f"pyson_data.Value(type = {self._type}, value = {self._value})"
 
     def __reduce__(self) -> tuple:
         """
         Reduce the Value object so it can be pickled
         """
-        return (self.__class__, (self.value, self.type))
+        return (self.__class__, (self._value, self._type))
+
+    def type(self) -> Type:
+        return self._type
+
+    def type_str(self) -> str:
+        return self._type.__str__()
+
+    def value(self) -> int | float | str | list[str]:
+        return self._value
+
+    def pyson_str(self) -> str:
+        value = self._value if not isinstance(self._value, list) else "(*)".join(self._value)
+        return f"{self._type}:{value}"
+
+    def is_int(self) -> bool:
+        return self._type == Type("int")
+
+    def is_float(self) -> bool:
+        return self._type == Type("float")
+
+    def is_str(self) -> bool:
+        return self._type == Type("str")
+
+    def is_list(self) -> bool:
+        return self._type == Type("list")
