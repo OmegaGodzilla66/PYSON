@@ -90,7 +90,10 @@ class Value:
         return self._value
 
     def pyson_str(self) -> str:
-        value = self._value if not isinstance(self._value, list) else "(*)".join(self._value)
+        value = (
+            str(self._value) if not isinstance(self._value, list)
+            else "(*)".join(self._value)
+        )
         return f"{self._type}:{value}"
 
     def is_int(self) -> bool:
@@ -104,3 +107,24 @@ class Value:
 
     def is_list(self) -> bool:
         return self._type == Type("list")
+
+NamedValue = tuple[str, Value]
+
+def parse_pyson_entry(entry: str) -> NamedValue:
+    if "\n" in entry:
+        raise ValueError("pyson entries cannot contain newlines")
+    name, type, value = entry.split(":", 2)
+    match type:
+        case "int":
+            value = int(value)
+        case "float":
+            value = float(value)
+        case "str":
+            pass    # value is already a str
+        case "list":
+            value = value.split("(*)")
+        case _:
+            raise ValueError(
+                f"Invalid pyson type {type} found in pyson_data.parse_pyson_entry()"
+            )
+    return (name, Value(value))
