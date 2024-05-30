@@ -128,3 +128,32 @@ def parse_pyson_entry(entry: str) -> NamedValue:
                 f"Invalid pyson type {type} found in pyson_data.parse_pyson_entry()"
             )
     return (name, Value(value))
+
+def pyson_to_list(data: str) -> list[NamedValue]:
+    list = [parse_pyson_entry(line) for line in data.split("\n")]
+    if len(set(name for name, value in list)) != len(list):
+        raise ValueError("Duplicate name(s) found in pyson_to_list()")
+    return list
+
+def pyson_file_to_list(file_path: str) -> list[NamedValue]:
+    try:
+        return pyson_to_list(open(file_path, "r").read())
+    except ValueError:
+        raise ValueError(
+            f"Duplicate name(s) found in file {file_path} during pyson_file_to_list()"
+        )
+
+def pyson_to_dict(data: str) -> dict[str, Value]:
+    list = [parse_pyson_entry(line) for line in data.split("\n")]
+    as_dict = dict(list)
+    if len(as_dict) != len(list):
+        raise ValueError("Duplicate name(s) found in pyson_to_dict()")
+    return as_dict
+
+def pyson_file_to_dict(file_path: str) -> dict[str, Value]:
+    try:
+        return pyson_to_dict(open(file_path).read())
+    except ValueError:
+        raise ValueError(
+            f"Duplicate name(s) found in file {file_path} during pyson_file_to_dict()"
+        )
