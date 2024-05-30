@@ -1,37 +1,23 @@
-import os
-import pyson_data as pyson
+from pyson_data import (
+    Type,
+    Value,
+    is_valid_pyson,
+    is_valid_pyson_entry,
+)
 
-# this is an example of how to use the pyson module
+assert all([t == Type(t).__str__() for t in ["int", "float", "str", "list"]])
 
-# Read test
-print("-----READ TEST-------")
-print(pyson.getData("example.pyson", "str_example"))
-print(pyson.getData("example.pyson", "int_example"))
-print(pyson.getData("example.pyson", "list_example"))
-print(pyson.getData("example.pyson", "float_example"))
-print(pyson.getList("example.pyson"))
+examples = (
+    (str(Type(t)), Value(v).type_str())
+    for t, v in
+    [("str", "string"), ("int", 123), ("float", 3.14), ("list", ["list", "of", "strings"])]
+)
+for t, v in examples:
+    assert t == v
 
-# Write test
-print("---WRITE TEST--------")
-pyson.write("newfile.pyson", "string", "str", "value", "w")
+lines = open("example.pyson").read().split("\n")
+for line in lines:
+    assert line == "" or is_valid_pyson_entry(line), f"Invalid pyson entry: {line}"
+    assert is_valid_pyson(line), f"Invalid pyson: \"{line}\""
 
-# Append test
-print("---APPEND TEST-------")
-pyson.write("newfile.pyson", "integer", "int", 123, "a")
-pyson.write("newfile.pyson", "floating-point", "float", 3.14, "a")
-pyson.write("newfile.pyson", "string list", "list", ["this is a list", "of strings"])
-pyson.writeMultiple("example.pyson", {"test": "value", "integer": 69, "list1": ["1", "2"], "pypi": 3.1415962})
-print(pyson.getList("newfile.pyson"))
-
-# Compatability test
-print("---COMPATABILITY TEST------")
-print(pyson.checkCompatible("example.pyson"))
-print(pyson.checkCompatible("newfile.pyson"))
-os.remove("newfile.pyson")
-
-# update val test
-print("---UPDATING TEST---")
-pyson.updateData("example.pyson", "str_example", "this is an updated string")
-print(pyson.getData("example.pyson", "str_example"))
-pyson.updateData("example.pyson", "str_example", "this is a string: strings can include colons")
-print(pyson.getData("example.pyson", "str_example"))
+print("All tests passed!")
