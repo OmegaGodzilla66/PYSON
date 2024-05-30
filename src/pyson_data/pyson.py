@@ -130,7 +130,7 @@ def parse_pyson_entry(entry: str) -> NamedValue:
     return (name, Value(value))
 
 def pyson_to_list(data: str) -> list[NamedValue]:
-    list = [parse_pyson_entry(line) for line in data.split("\n")]
+    list = [parse_pyson_entry(line) for line in data.split("\n") if line != ""]
     if len(set(name for name, value in list)) != len(list):
         raise ValueError("Duplicate name(s) found in pyson_to_list()")
     return list
@@ -144,7 +144,7 @@ def pyson_file_to_list(file_path: str) -> list[NamedValue]:
         )
 
 def pyson_to_dict(data: str) -> dict[str, Value]:
-    list = [parse_pyson_entry(line) for line in data.split("\n")]
+    list = [parse_pyson_entry(line) for line in data.split("\n") if line != ""]
     as_dict = dict(list)
     if len(as_dict) != len(list):
         raise ValueError("Duplicate name(s) found in pyson_to_dict()")
@@ -157,3 +157,35 @@ def pyson_file_to_dict(file_path: str) -> dict[str, Value]:
         raise ValueError(
             f"Duplicate name(s) found in file {file_path} during pyson_file_to_dict()"
         )
+
+def is_valid_pyson_entry(entry: str) -> bool:
+    """
+    Check if a pyson entry is valid
+    True = valid
+    False = invalid
+    Note: empty strings will be counted as invalid because \
+    they are not a valid *entry* despite the fact that \
+    having an empty lines is OK in a pyson *file*.
+    """
+    # this isn't great code quality or very fast
+    # but if you want speed why are you using python
+    # also True is definitely the happy path here
+    # it is probably fine for the sad path to be slow
+    try:
+        parse_pyson_entry(entry)
+    except ValueError:
+        return False
+    else:
+        return True
+
+def is_valid_pyson(data: str) -> bool:
+    """
+    Check if a string one or more pyson entries is valid
+    True = valid
+    False = invalid
+    Note: having an empty line will make this function return True \
+    because even though that is an invalid entry, it is still valid \
+    as part of a pyson file.
+    """
+    lines_are_valid = [is_valid_pyson_entry(line) for line in data.split("\n") if line != ""]
+    return len(lines_are_valid) == 0 or all(lines_are_valid)
