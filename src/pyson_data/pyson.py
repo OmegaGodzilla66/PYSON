@@ -29,6 +29,11 @@ class Type:
         return (self.__class__, (self._type,))
 
     def to_python_type(self) -> type:
+        """
+        Returns the python type of the Type
+        Currently returns one of the types int, float, str, or list[str], \
+        but this may change in the future if more types are added to pyson.
+        """
         match self._type:
             case "int":
                 return int
@@ -39,6 +44,7 @@ class Type:
             case "list":
                 return list[str]
         assert False, f"Unreachable code: pyson_data.Type with invalid type {self._type}"
+
 
 class Value:
     def __init__(self, value: int | float | str | list[str]) -> None:
@@ -81,12 +87,29 @@ class Value:
         return (self.__class__, (self._value, self._type))
 
     def type(self) -> Type:
+        """
+        Returns the pyson Type of the Value.
+        Unless somebody violates python privacy conventions
+        by editing the Value object directly, \
+        isinstance(v.value(), v.type().to_python_type()) \
+        will always be true if v is of type Value.
+        """
         return self._type
 
     def type_str(self) -> str:
+        """
+        Returns the pyson Type of the Value as a string.
+        """
         return self._type.__str__()
 
     def value(self) -> int | float | str | list[str]:
+        """
+        Returns the internal value contained in the Value.
+        Unless somebody violates python privacy conventions
+        by editing the Value object directly, \
+        isinstance(v.value(), v.type().to_python_type()) \
+        will always be true if v is of type Value.
+        """
         return self._value
 
     def pyson_str(self) -> str:
@@ -97,20 +120,43 @@ class Value:
         return f"{self._type}:{value}"
 
     def is_int(self) -> bool:
+        """
+        Returns True if the Value is an int, False otherwise.
+        If v.is_int(), then v.type_str() will return "int".
+        """
         return self._type == Type("int")
 
     def is_float(self) -> bool:
+        """
+        Returns True if the Value is a float, False otherwise.
+        If v.is_float(), then v.type_str() will return "float".
+        """
         return self._type == Type("float")
 
     def is_str(self) -> bool:
+        """
+        Returns True if the Value is a str, False otherwise.
+        If v.is_str(), then v.type_str() will return "str".
+        """
         return self._type == Type("str")
 
     def is_list(self) -> bool:
+        """
+        Returns True if the Value is a list, False otherwise.
+        If v.is_list(), then v.type_str() will return "list".
+        """
         return self._type == Type("list")
 
+
+# A tuple of (name, value) representing a named Value in pyson
 NamedValue = tuple[str, Value]
 
 def parse_pyson_entry(entry: str) -> NamedValue:
+    """
+    Parse an entry (line) in pyson into a NamedValue.
+    Will raise an error if the entry contains a newline, \
+    or if the entry is invalid pyson.
+    """
     if "\n" in entry:
         raise ValueError("pyson entries cannot contain newlines")
     name, type, value = entry.split(":", 2)
@@ -130,12 +176,22 @@ def parse_pyson_entry(entry: str) -> NamedValue:
     return (name, Value(value))
 
 def pyson_to_list(data: str) -> list[NamedValue]:
+    """
+    Parse a pyson string into a list of NamedValue.
+    Will raise an exception if there is any invalid pyson.
+    """
     list = [parse_pyson_entry(line) for line in data.split("\n") if line != ""]
     if len(set(name for name, value in list)) != len(list):
         raise ValueError("Duplicate name(s) found in pyson_to_list()")
     return list
 
 def pyson_file_to_list(file_path: str) -> list[NamedValue]:
+    """
+    Parse a file in the pyson format into a list of NamedValue.
+    Will raise an exception if any of the following happen:
+        - An IO error happens while opening or reading the file
+        - The file contains invalid pyson
+    """
     try:
         return pyson_to_list(open(file_path, "r").read())
     except ValueError:
@@ -144,6 +200,10 @@ def pyson_file_to_list(file_path: str) -> list[NamedValue]:
         )
 
 def pyson_to_dict(data: str) -> dict[str, Value]:
+    """
+    Parse a pyson string into a dict of name (str) to value (Value).
+    Will raise an exception if there is any invalid pyson.
+    """
     list = [parse_pyson_entry(line) for line in data.split("\n") if line != ""]
     as_dict = dict(list)
     if len(as_dict) != len(list):
@@ -151,6 +211,12 @@ def pyson_to_dict(data: str) -> dict[str, Value]:
     return as_dict
 
 def pyson_file_to_dict(file_path: str) -> dict[str, Value]:
+    """
+    Parse a pyson file into a dict of name (str) to value (Value).
+    Will raise an exception if any of the following happen:
+        - An IO error happens while opening or reading the file
+        - The file contains invalid pyson
+    """
     try:
         return pyson_to_dict(open(file_path).read())
     except ValueError:
@@ -165,7 +231,7 @@ def is_valid_pyson_entry(entry: str) -> bool:
     False = invalid
     Note: empty strings will be counted as invalid because \
     they are not a valid *entry* despite the fact that \
-    having an empty lines is OK in a pyson *file*.
+    having an empty lines is OK in the pyson format.
     """
     # this isn't great code quality or very fast
     # but if you want speed why are you using python
@@ -187,5 +253,4 @@ def is_valid_pyson(data: str) -> bool:
     because even though that is an invalid entry, it is still valid \
     as part of a pyson file.
     """
-    lines_are_valid = [is_valid_pyson_entry(line) for line in data.split("\n") if line != ""]
-    return len(lines_are_valid) == 0 or all(lines_are_valid)
+    return all(line != "" or is_valid_pyson_entry(line) for line in data.split("\n"))
