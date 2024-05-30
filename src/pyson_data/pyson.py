@@ -9,23 +9,19 @@ class Type:
         self._type: str = type
 
     def __str__(self) -> str:
-        """
-        String representation of the Type
-        """
+        """String representation of the Type"""
         return self._type
 
     def __repr__(self) -> str:
         """
         String representation of the Type
-        Unlike Type.__str__(), this method will include the fact that
+        Unlike Type.__str__(), this method will include the fact that \
         this is a Type object from the pyson_data package
         """
         return f"pyson_data.Type({self._type})"
 
     def __reduce__(self) -> tuple:
-        """
-        Reduce the Type object so it can be pickled
-        """
+        """Reduce the Type object so it can be pickled"""
         return (self.__class__, (self._type,))
 
     def to_python_type(self) -> type:
@@ -67,23 +63,19 @@ class Value:
             raise ValueError(f"Invalid pyson type type {type(value)}")
 
     def __str__(self) -> str:
-        """
-        String representation of the Value
-        """
-        return f"{self._type}:{self._value}"
+        """String representation of the Value"""
+        return self.pyson_str()
 
     def __repr__(self) -> str:
         """
         String representation of the Value
-        Unlike Value.__str__(), this method will include the fact that
+        Unlike Value.__str__(), this method will include the fact that \
         this is a Value object from the pyson_data package
         """
         return f"pyson_data.Value(type = {self._type}, value = {self._value})"
 
     def __reduce__(self) -> tuple:
-        """
-        Reduce the Value object so it can be pickled
-        """
+        """Reduce the Value object so it can be pickled"""
         return (self.__class__, (self._value, self._type))
 
     def type(self) -> Type:
@@ -97,9 +89,7 @@ class Value:
         return self._type
 
     def type_str(self) -> str:
-        """
-        Returns the pyson Type of the Value as a string.
-        """
+        """Returns the pyson Type of the Value as a string."""
         return self._type.__str__()
 
     def value(self) -> int | float | str | list[str]:
@@ -147,9 +137,86 @@ class Value:
         """
         return self._type == Type("list")
 
+class NamedValue:
+    def __init__(self, name: str, value: Value):
+        """
+        Initialize a new NamedValue.
+        Takes 2 arguments, which must be a str and a Value.
+        """
+        self._name = name
+        self._value = value
 
-# A tuple of (name, value) representing a named Value in pyson
-NamedValue = tuple[str, Value]
+    def name(self) -> str:
+        return self._name
+
+    def change_name(self, new_name: str) -> None:
+        self._name = new_name
+
+    def swap_name(self, new_name: str) -> str:
+        self._name, old_name = new_name, self._name
+        return old_name
+
+    def type(self) -> Type:
+        """
+        Returns the type of the value in the NamedValue.
+        If you have a NamedValue nv, then \
+        `t = nv.type()` \
+        has the same effect as \
+        `t = nv.value().type()`.
+        """
+        return self._value.type()
+
+    def type_str(self) -> str:
+        """
+        Returns the type of the value in the NamedValue as a string.
+        If you have a NamedValue nv, then \
+        `t = nv.type_str()` \
+        has the same effect as \
+        `t = nv.value().type_str()`.
+        """
+        return self._value.type_str()
+    
+    def value(self) -> Value:
+        return self._value
+
+    def change_value(self, new_value: Value) -> None:
+        self._value = new_value
+
+    def swap_value(self, new_value: Value) -> Value:
+        self._value, old_value = new_value, self._value
+        return old_value
+
+    def to_tuple(self) -> tuple[str, Value]:
+        """
+        Returns a tuple of the name and value of the NamedValue.
+        If you have a NamedValue nv, then \
+        `name, value = nv.to_tuple()` \
+        will have the same effect as \
+        `name, value = nv.name(), nv.value()`.
+        Additionally, if you have a str s and a value v, \
+        then `s, v == NamedValue(s, v).to_tuple()` \
+        will always be true.
+        """
+        return self._name, self._value
+
+    def pyson_str(self) -> str:
+        return f"{self._name}:{self._value}"
+
+    def __str__(self) -> str:
+        """String representation of the NamedValue"""
+        return self.pyson_str()
+
+    def __repr__(self) -> str:
+        """
+        String representation of the NamedValue.
+        Unlike NamedValue.__str__(), this method will include the fact that \
+        this is a NamedValue object from the pyson_data package
+        """
+        return f"pyson_data.NamedValue(name = {self._name}, value = {self._value.__repr__()})"
+
+    def __reduce__(self) -> tuple:
+        """Reduce the NamedValue object so it can be pickled"""
+        return (self.__class__, (self._name, self._value))
 
 def parse_pyson_entry(entry: str) -> NamedValue:
     """
@@ -173,7 +240,7 @@ def parse_pyson_entry(entry: str) -> NamedValue:
             raise ValueError(
                 f"Invalid pyson type {type} found in pyson_data.parse_pyson_entry()"
             )
-    return (name, Value(value))
+    return NamedValue(name, Value(value))
 
 def pyson_to_list(data: str) -> list[NamedValue]:
     """
@@ -181,7 +248,7 @@ def pyson_to_list(data: str) -> list[NamedValue]:
     Will raise an exception if there is any invalid pyson.
     """
     list = [parse_pyson_entry(line) for line in data.split("\n") if line != ""]
-    if len(set(name for name, value in list)) != len(list):
+    if len(set(nv.name() for nv in list)) != len(list):
         raise ValueError("Duplicate name(s) found in pyson_to_list()")
     return list
 
@@ -205,7 +272,7 @@ def pyson_to_dict(data: str) -> dict[str, Value]:
     Will raise an exception if there is any invalid pyson.
     """
     list = [parse_pyson_entry(line) for line in data.split("\n") if line != ""]
-    as_dict = dict(list)
+    as_dict = dict((nv.name(), nv.value()) for nv in list)
     if len(as_dict) != len(list):
         raise ValueError("Duplicate name(s) found in pyson_to_dict()")
     return as_dict
@@ -253,4 +320,4 @@ def is_valid_pyson(data: str) -> bool:
     because even though that is an invalid entry, it is still valid \
     as part of a pyson file.
     """
-    return all(line != "" or is_valid_pyson_entry(line) for line in data.split("\n"))
+    return all(line == "" or is_valid_pyson_entry(line) for line in data.split("\n"))
