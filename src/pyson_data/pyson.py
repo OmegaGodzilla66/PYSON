@@ -1,278 +1,323 @@
-# Values in pyson can be strings, lists of strings, floating-point numbers, or integers
-PysonValue = str | list[str] | float | int
+class Type:
+    def __init__(self, type) -> None:
+        """
+        Initialize a new pyson Type
+        Takes 1 argument, which must be either "int", "float", "str", or "list"
+        """
+        if type not in ["int", "float", "str", "list"]:
+            raise ValueError(f"Invalid type {type}")
+        self._type: str = type
 
+    def __str__(self) -> str:
+        """String representation of the Type"""
+        return self._type
 
-def getData(filePath: str, name: str) -> PysonValue:
-    """Extracts a single item's value from a .pyson file
-    
-    Args:
-        filepath (str): Filepath location of pyson file 
-        name (str): Name of data that you are extracting
-        
-    Returns: 
-        PysonValue: The value of the item you extracted from the pyson file
-    """
+    def __repr__(self) -> str:
+        """
+        String representation of the Type
+        Unlike Type.__str__(), this method will include the fact that \
+        this is a Type object from the pyson_data package
+        """
+        return f"pyson_data.Type({self._type})"
 
-    # Raise an exception if the file is not pyson-compatible
-    if not checkCompatible(filePath):
-        raise Exception("File is not compatible with .pyson format.")
+    def __reduce__(self) -> tuple:
+        """Reduce the Type object so it can be pickled"""
+        return (self.__class__, (self._type,))
 
-    # Loop through the lines in the file
-    for line in open(filePath, "r").read().split("\n"):
-        if line == "":
-            continue
-        # Split the pyson value stored into [name, type, value]
-        data = line.split(":", 2)
-        # If the name is correct, store the value and type
-        if data[0] == name:
-            match data[1]:
-                case "str":
-                    return str(data[2])
-                case "int":
-                    return int(data[2])
-                case "float":
-                    return float(data[2])
-                case "list":
-                    return data[2].split("\n")
-                case _:
-                    raise Exception("Should be unreachable due to checkCompatible")
-    # If the name desired is not in the file, raise an exception
-    raise Exception(f"Data with name \"{name}\" not found. Maybe try a different file?")
-
-
-def getList(filePath: str) -> list[PysonValue]:
-    """Extracts all values of items from a .pyson file in list format
-    
-    Args:
-        filePath (str): the file to extract the pyson values from
-        
-    Returns:
-        list: A list of all the pyson values from the file
-    """
-
-    # Checks whether the file is valid pyson
-    if not checkCompatible(filePath):
-        raise Exception("File passed to getList() is not compatible with pyson format")
-
-    whole: list[PysonValue] = []
-    for item in open(filePath, "r").read().split("\n"):
-        if item == "":
-            continue
-        data: list[str] = item.split(":", 2)
-        match data[1]:
-            case "str":
-                whole.append(data[2])
+    def to_python_type(self) -> type:
+        """
+        Returns the python type of the Type
+        Currently returns one of the types int, float, str, or list[str], \
+        but this may change in the future if more types are added to pyson.
+        """
+        match self._type:
             case "int":
-                whole.append(int(data[2]))
+                return int
             case "float":
-                whole.append(float(data[2]))
-            case "list":
-                whole.append(data[2].split("(*)"))
-            case _:
-                raise Exception(f"Unknown type {data[1]} in {filePath} found during getList()")
-    return whole
-
-def getDict(filePath: str) -> dict[str, PysonValue]:
-    """Fetches all items from a .pyson file and returns a hashmap of {name:value}
-    
-    Args:
-        filePath (str): the file to extract values from
-    
-    Returns:
-        dict: A dict of {name : value} with all the pyson values from the file 
-    """
-
-    if not checkCompatible(filePath):
-        raise Exception("File passed to getDict() is not compatible with the pyson format")
-
-    data: dict[str, PysonValue] = dict()
-    for line in open(filePath, "r").read().split("\n"):
-        if line == "":
-            continue
-        name, type, value = line.split(":", 2)
-        match type:
+                return float
             case "str":
-                data[name] = value
-            case "int":
-                data[name] = int(value)
-            case "float":
-                data[name] = float(value)
+                return str
             case "list":
-                data[name] = value.split("(*)")
-            case _:
-                raise Exception(f"Unknown type {type} in {filePath} found during getDict()")
-    return data
-    
-
-# Append pyson value to pyson file
-# TODO: optimize
-def write(filePath: str, name: str, type: str, value: PysonValue, mode: str = "a") -> None:
-    """Writes/appends single value to .pyson file
-    
-    Args:
-        filepath (str): File path to write to
-        name (str): Name of the PysonValue to write
-        type (str): Type of the PysonValue to write
-        value (PysonValue): Value to insert into the file
-        mode (str):  What mode to use when writing the file.
-            mode can be either 'w' (overwrite old data) or 'a' (append to the file)
-            (default is 'a')
-            
-    Returns: 
-        None
-    """
-
-    # Create the file if it doesn't exist
-    open(filePath, "a+").close()
-
-    # Make value be a str
-    if isinstance(value, list):
-        value = "(*)".join(value)
-    if isinstance(value, float) or isinstance(value, int):
-        value = str(value)
-    if not isinstance(value, str):
-        raise Exception("Parameter value has invalid type")
-
-    # Make sure the write mode is either append or write
-    if not (mode == "a" or mode == "w"):
-        raise Exception("Invalid writing mode, must be 'a' (append) or 'w' (write)")
-    # Checks for .pyson compatability
-    if not checkCompatible(filePath):
-        raise Exception("File is not compatible with .pyson format.")
-
-    fileData: list[str] = open(filePath, "r").read().split("\n")
-    names: list[str] = []
-
-    data = ""
-    for item in fileData:
-        if item == "":
-            continue
-        data = item.split(":", 2)
-        match data[1]:
-            case "str" | "int" | "list" | "float":
-                names.append(data[0])
-            case _:
-                raise Exception("Unreachable, type correctness is checked in checkCompatible()")
-    if name in names:
-        raise Exception("Cannot have two items with the same call.")
-    # Checks for .pyson compatability with the new item
-    match type:
-        case "str" | "list":
-            pass
-        case "int":
-            # Make sure the value is actually an int
-            int(value)
-        case "float":
-            # Make sure the value is actually a float
-            float(value)
-        case _:
-            raise Exception(f"Data type {type} not supported")
-    toWrite = name + ":" + type + ":" + value
-    if mode == "a":
-        toWrite = "\n" + toWrite
-    open(filePath, mode).write(toWrite)
+                return list[str]
+        assert False, f"Unreachable code: pyson_data.Type with invalid type {self._type}"
 
 
-def writeMultiple(filePath: str, data: dict[str, PysonValue], mode: str = "a") -> None:
-    """Writes/appends multiple pyson values to a file
-    
-    Args:
-        filepath (str): File path to write to
-        data (dict[str, PysonValue]): Dictionary of {name : value}
-         mode (str):  What mode to use when writing the file.
-            mode can be either 'w' (overwrite old data) or 'a' (append to the file)
-            (default is 'a')
-    
-    Returns: 
-        None
-    """
-    for tup in data.items():
-        name, value = tup
-        type = ""
-        if isinstance(value, list):
-            type = "list"
+class Value:
+    def __init__(self, value: int | float | str | list[str]) -> None:
+        """
+        Initialize a new pyson Value
+        Takes 1 argument, which must be either an int, float, str, or list of str
+        """
+        self._value: int | float | str | list[str] = value
         if isinstance(value, int):
-            type = "int"
-        if isinstance(value, float):
-            type = "float"
-        if isinstance(value, str):
-            type = "str"
-        if type == "":
-            raise Exception("Invalid pyson type in writeMultiple()")
-        write(filePath, name, type, value, mode)
-        mode = "a"
+            self._type = Type("int")
+        elif isinstance(value, float):
+            self._type = Type("float")
+        elif isinstance(value, str):
+            self._type = Type("str")
+        elif isinstance(value, list):
+            if any(not isinstance(item, str) for item in value):
+                raise ValueError("Lists in pyson must contain only strings")
+            self._type = Type("list")
+        else:
+            raise ValueError(f"Invalid pyson type type {type(value)}")
 
+    def __str__(self) -> str:
+        """String representation of the Value"""
+        return self.pyson_str()
 
-def updateData(filePath: str, name: str, data: str) -> None:
-    """Updates value of item in .pyson file
-    Note: the type of data currently cannot be updated
+    def __repr__(self) -> str:
+        """
+        String representation of the Value
+        Unlike Value.__str__(), this method will include the fact that \
+        this is a Value object from the pyson_data package
+        """
+        return f"pyson_data.Value(type = {self._type}, value = {self._value})"
+
+    def __reduce__(self) -> tuple:
+        """Reduce the Value object so it can be pickled"""
+        return (self.__class__, (self._value, self._type))
+
+    def type(self) -> Type:
+        """
+        Returns the pyson Type of the Value.
+        Unless somebody violates python privacy conventions
+        by editing the Value object directly, \
+        isinstance(v.value(), v.type().to_python_type()) \
+        will always be true if v is of type Value.
+        """
+        return self._type
+
+    def type_str(self) -> str:
+        """Returns the pyson Type of the Value as a string."""
+        return self._type.__str__()
+
+    def value(self) -> int | float | str | list[str]:
+        """
+        Returns the internal value contained in the Value.
+        Unless somebody violates python privacy conventions
+        by editing the Value object directly, \
+        isinstance(v.value(), v.type().to_python_type()) \
+        will always be true if v is of type Value.
+        """
+        return self._value
+
+    def pyson_str(self) -> str:
+        value = (
+            str(self._value) if not isinstance(self._value, list)
+            else "(*)".join(self._value)
+        )
+        return f"{self._type}:{value}"
+
+    def is_int(self) -> bool:
+        """
+        Returns True if the Value is an int, False otherwise.
+        If v.is_int(), then v.type_str() will return "int".
+        """
+        return self._type == Type("int")
+
+    def is_float(self) -> bool:
+        """
+        Returns True if the Value is a float, False otherwise.
+        If v.is_float(), then v.type_str() will return "float".
+        """
+        return self._type == Type("float")
+
+    def is_str(self) -> bool:
+        """
+        Returns True if the Value is a str, False otherwise.
+        If v.is_str(), then v.type_str() will return "str".
+        """
+        return self._type == Type("str")
+
+    def is_list(self) -> bool:
+        """
+        Returns True if the Value is a list, False otherwise.
+        If v.is_list(), then v.type_str() will return "list".
+        """
+        return self._type == Type("list")
+
+class NamedValue:
+    def __init__(self, name: str, value: Value):
+        """
+        Initialize a new NamedValue.
+        Takes 2 arguments, which must be a str and a Value.
+        """
+        self._name = name
+        self._value = value
+
+    def name(self) -> str:
+        return self._name
+
+    def change_name(self, new_name: str) -> None:
+        self._name = new_name
+
+    def swap_name(self, new_name: str) -> str:
+        self._name, old_name = new_name, self._name
+        return old_name
+
+    def type(self) -> Type:
+        """
+        Returns the type of the value in the NamedValue.
+        If you have a NamedValue nv, then \
+        `t = nv.type()` \
+        has the same effect as \
+        `t = nv.value().type()`.
+        """
+        return self._value.type()
+
+    def type_str(self) -> str:
+        """
+        Returns the type of the value in the NamedValue as a string.
+        If you have a NamedValue nv, then \
+        `t = nv.type_str()` \
+        has the same effect as \
+        `t = nv.value().type_str()`.
+        """
+        return self._value.type_str()
     
-    Args:
-        filepath (str): File path where the value is
-        name (str): Name of the data to update
-        data (str): The value to update as a string
-        
-    Returns: None
+    def value(self) -> Value:
+        return self._value
+
+    def change_value(self, new_value: Value) -> None:
+        self._value = new_value
+
+    def swap_value(self, new_value: Value) -> Value:
+        self._value, old_value = new_value, self._value
+        return old_value
+
+    def to_tuple(self) -> tuple[str, Value]:
+        """
+        Returns a tuple of the name and value of the NamedValue.
+        If you have a NamedValue nv, then \
+        `name, value = nv.to_tuple()` \
+        will have the same effect as \
+        `name, value = nv.name(), nv.value()`.
+        Additionally, if you have a str s and a value v, \
+        then `s, v == NamedValue(s, v).to_tuple()` \
+        will always be true.
+        """
+        return self._name, self._value
+
+    def pyson_str(self) -> str:
+        return f"{self._name}:{self._value}"
+
+    def __str__(self) -> str:
+        """String representation of the NamedValue"""
+        return self.pyson_str()
+
+    def __repr__(self) -> str:
+        """
+        String representation of the NamedValue.
+        Unlike NamedValue.__str__(), this method will include the fact that \
+        this is a NamedValue object from the pyson_data package
+        """
+        return f"pyson_data.NamedValue(name = {self._name}, value = {self._value.__repr__()})"
+
+    def __reduce__(self) -> tuple:
+        """Reduce the NamedValue object so it can be pickled"""
+        return (self.__class__, (self._name, self._value))
+
+def parse_pyson_entry(entry: str) -> NamedValue:
     """
-    data = str(data)
-    # Read in the data
-    file = open(filePath, "r")
-    fileData: list[str] = file.read().split("\n")
-    file.close()
-    # Look through the data to find the value to update
-    index: int = 0
-    foundItem: bool = False
-    for line in fileData:
-        splitted: list[str] = line.split(":", 2)
-        if splitted[0] == name:
-            splitted[2] = data
-            fileData[index] = ":".join(splitted)
-            foundItem = True
-            break
-        index += 1
-    # If no value had the desired name, raise an exception
-    if not foundItem:
-        raise Exception("Couldn't write to non-existent item")
-    # Write out the data
-    open(filePath, "w").write("\n".join(fileData))
-
-
-# Returns `true` if the file at filePath is a valid pyson file, and false otherwise.
-def checkCompatible(filePath: str) -> bool:
-    """Checks if file is compatible with .pyson format
-    
-    Args:
-        filepath (str): Path to the file that you want to check whether it is compatible
-    Returns:
-        bool: a bool that indicates whether or not a file is valid pyson
+    Parse an entry (line) in pyson into a NamedValue.
+    Will raise an error if the entry contains a newline, \
+    or if the entry is invalid pyson.
     """
+    if "\n" in entry:
+        raise ValueError("pyson entries cannot contain newlines")
+    name, type, value = entry.split(":", 2)
+    match type:
+        case "int":
+            value = int(value)
+        case "float":
+            value = float(value)
+        case "str":
+            pass    # value is already a str
+        case "list":
+            value = value.split("(*)")
+        case _:
+            raise ValueError(
+                f"Invalid pyson type {type} found in pyson_data.parse_pyson_entry()"
+            )
+    return NamedValue(name, Value(value))
 
-    fileData: list[str] = open(filePath, "r").read().split("\n")
-    names: set[str] = set()
-    # Go through the items, check if they have correct types, and if it is [dataname, type, value]
-    for item in fileData:
-        if item == "":
-            continue
-        data = item.split(":", 2)
-        if len(data) < 3:
-            return False
-        match data[1]:
-            case "str" | "list":
-                pass
-            case "int":
-                try:
-                    int(data[2])
-                except ValueError:
-                    return False
-            case "float":
-                try:
-                    float(data[2])
-                except ValueError:
-                    return False
-            case _:
-                return False
-        if data[0] in names:
-            return False
-        names.add(data[0])
+def pyson_to_list(data: str) -> list[NamedValue]:
+    """
+    Parse a pyson string into a list of NamedValue.
+    Will raise an exception if there is any invalid pyson.
+    """
+    list = [parse_pyson_entry(line) for line in data.split("\n") if line != ""]
+    if len(set(nv.name() for nv in list)) != len(list):
+        raise ValueError("Duplicate name(s) found in pyson_to_list()")
+    return list
 
-    return True
+def pyson_file_to_list(file_path: str) -> list[NamedValue]:
+    """
+    Parse a file in the pyson format into a list of NamedValue.
+    Will raise an exception if any of the following happen:
+        - An IO error happens while opening or reading the file
+        - The file contains invalid pyson
+    """
+    try:
+        return pyson_to_list(open(file_path, "r").read())
+    except ValueError:
+        raise ValueError(
+            f"Duplicate name(s) found in file {file_path} during pyson_file_to_list()"
+        )
+
+def pyson_to_dict(data: str) -> dict[str, Value]:
+    """
+    Parse a pyson string into a dict of name (str) to value (Value).
+    Will raise an exception if there is any invalid pyson.
+    """
+    list = [parse_pyson_entry(line) for line in data.split("\n") if line != ""]
+    as_dict = dict((nv.name(), nv.value()) for nv in list)
+    if len(as_dict) != len(list):
+        raise ValueError("Duplicate name(s) found in pyson_to_dict()")
+    return as_dict
+
+def pyson_file_to_dict(file_path: str) -> dict[str, Value]:
+    """
+    Parse a pyson file into a dict of name (str) to value (Value).
+    Will raise an exception if any of the following happen:
+        - An IO error happens while opening or reading the file
+        - The file contains invalid pyson
+    """
+    try:
+        return pyson_to_dict(open(file_path).read())
+    except ValueError:
+        raise ValueError(
+            f"Duplicate name(s) found in file {file_path} during pyson_file_to_dict()"
+        )
+
+def is_valid_pyson_entry(entry: str) -> bool:
+    """
+    Check if a pyson entry is valid
+    True = valid
+    False = invalid
+    Note: empty strings will be counted as invalid because \
+    they are not a valid *entry* despite the fact that \
+    having an empty lines is OK in the pyson format.
+    """
+    # this isn't great code quality or very fast
+    # but if you want speed why are you using python
+    # also True is definitely the happy path here
+    # it is probably fine for the sad path to be slow
+    try:
+        parse_pyson_entry(entry)
+    except ValueError:
+        return False
+    else:
+        return True
+
+def is_valid_pyson(data: str) -> bool:
+    """
+    Check if a string one or more pyson entries is valid
+    True = valid
+    False = invalid
+    Note: having an empty line will make this function return True \
+    because even though that is an invalid entry, it is still valid \
+    as part of a pyson file.
+    """
+    return all(line == "" or is_valid_pyson_entry(line) for line in data.split("\n"))

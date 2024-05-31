@@ -1,4 +1,19 @@
-str_example:str:this is a string: strings can include colons
-int_example:int:100
-list_example:list:this(*)is(*)a(*)list
-float_example:float:123.456
+int:int:123
+float:float:1.23
+str:str:string
+list:list:list(*)of(*)string
+
+the number three:int:3
+value of pi:float:3.1415926535
+string with spaces:str:this has spaces in it
+list with spaces:list:this list(*) has spaces in (*)the values (*) yes it does(*)more list
+
+int:int:0
+float:float:0
+str:str:str
+list:list:list
+
+str with colons:str:this string: it has colons in it! wow: crazy
+str with list formatting:list:wow no way(*)this could be a list(*)with multiple elements
+list with colons:list:this list has: colons(*)in the list: like that! :and that
+list with hanging elements:list:(*)empty elements at start and end(*)
