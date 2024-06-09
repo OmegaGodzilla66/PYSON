@@ -264,7 +264,7 @@ def pyson_file_to_list(file_path: str) -> list[NamedValue]:
         - The file contains invalid pyson
     """
     if not file_path.endswith(".pyson"):
-        raise IOError(f"File {file_path} does not end with .pyson")
+        raise print("WARNING: File does not end in .pyson")
     try:
         return pyson_to_list(open(file_path, "r").read())
     except ValueError:
@@ -294,7 +294,7 @@ def pyson_file_to_dict(file_path: str) -> dict[str, Value]:
     """
 
     if not file_path.endswith(".pyson"):
-        raise IOError(f"File {file_path} does not end with .pyson")
+        print("WARNING: File does not end in .pyson")
 
     try:
         return pyson_to_dict(open(file_path).read())
