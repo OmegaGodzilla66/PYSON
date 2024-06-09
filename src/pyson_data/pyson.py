@@ -22,7 +22,7 @@ class Type:
 
     def __reduce__(self) -> tuple:
         """Reduce the Type object so it can be pickled"""
-        return (self.__class__, (self._type,))
+        return self.__class__, (self._type,)
 
     def to_python_type(self) -> type:
         """
@@ -76,7 +76,7 @@ class Value:
 
     def __reduce__(self) -> tuple:
         """Reduce the Value object so it can be pickled"""
-        return (self.__class__, (self._value, self._type))
+        return self.__class__, (self._value, self._type)
 
     def type(self) -> Type:
         """
@@ -137,6 +137,7 @@ class Value:
         """
         return self._type == Type("list")
 
+
 class NamedValue:
     def __init__(self, name: str, value: Value):
         """
@@ -175,7 +176,7 @@ class NamedValue:
         `t = nv.value().type_str()`.
         """
         return self._value.type_str()
-    
+
     def value(self) -> Value:
         return self._value
 
@@ -216,7 +217,8 @@ class NamedValue:
 
     def __reduce__(self) -> tuple:
         """Reduce the NamedValue object so it can be pickled"""
-        return (self.__class__, (self._name, self._value))
+        return self.__class__, (self._name, self._value)
+
 
 def parse_pyson_entry(entry: str) -> NamedValue:
     """
@@ -233,7 +235,7 @@ def parse_pyson_entry(entry: str) -> NamedValue:
         case "float":
             value = float(value)
         case "str":
-            pass    # value is already a str
+            pass  # value is already a str
         case "list":
             value = value.split("(*)")
         case _:
@@ -241,6 +243,7 @@ def parse_pyson_entry(entry: str) -> NamedValue:
                 f"Invalid pyson type {type} found in pyson_data.parse_pyson_entry()"
             )
     return NamedValue(name, Value(value))
+
 
 def pyson_to_list(data: str) -> list[NamedValue]:
     """
@@ -252,6 +255,7 @@ def pyson_to_list(data: str) -> list[NamedValue]:
         raise ValueError("Duplicate name(s) found in pyson_to_list()")
     return list
 
+
 def pyson_file_to_list(file_path: str) -> list[NamedValue]:
     """
     Parse a file in the pyson format into a list of NamedValue.
@@ -259,12 +263,15 @@ def pyson_file_to_list(file_path: str) -> list[NamedValue]:
         - An IO error happens while opening or reading the file
         - The file contains invalid pyson
     """
+    if not file_path.endswith(".pyson"):
+        raise IOError(f"File {file_path} does not end with .pyson")
     try:
         return pyson_to_list(open(file_path, "r").read())
     except ValueError:
         raise ValueError(
             f"Duplicate name(s) found in file {file_path} during pyson_file_to_list()"
         )
+
 
 def pyson_to_dict(data: str) -> dict[str, Value]:
     """
@@ -277,6 +284,7 @@ def pyson_to_dict(data: str) -> dict[str, Value]:
         raise ValueError("Duplicate name(s) found in pyson_to_dict()")
     return as_dict
 
+
 def pyson_file_to_dict(file_path: str) -> dict[str, Value]:
     """
     Parse a pyson file into a dict of name (str) to value (Value).
@@ -284,12 +292,17 @@ def pyson_file_to_dict(file_path: str) -> dict[str, Value]:
         - An IO error happens while opening or reading the file
         - The file contains invalid pyson
     """
+
+    if not file_path.endswith(".pyson"):
+        raise IOError(f"File {file_path} does not end with .pyson")
+
     try:
         return pyson_to_dict(open(file_path).read())
     except ValueError:
         raise ValueError(
             f"Duplicate name(s) found in file {file_path} during pyson_file_to_dict()"
         )
+
 
 def is_valid_pyson_entry(entry: str) -> bool:
     """
@@ -310,6 +323,7 @@ def is_valid_pyson_entry(entry: str) -> bool:
         return False
     else:
         return True
+
 
 def is_valid_pyson(data: str) -> bool:
     """
