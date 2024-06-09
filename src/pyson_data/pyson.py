@@ -263,8 +263,6 @@ def pyson_file_to_list(file_path: str) -> list[NamedValue]:
         - An IO error happens while opening or reading the file
         - The file contains invalid pyson
     """
-    if not file_path.endswith(".pyson"):
-        raise print("WARNING: File does not end in .pyson")
     try:
         return pyson_to_list(open(file_path, "r").read())
     except ValueError:
@@ -292,9 +290,6 @@ def pyson_file_to_dict(file_path: str) -> dict[str, Value]:
         - An IO error happens while opening or reading the file
         - The file contains invalid pyson
     """
-
-    if not file_path.endswith(".pyson"):
-        print("WARNING: File does not end in .pyson")
 
     try:
         return pyson_to_dict(open(file_path).read())
